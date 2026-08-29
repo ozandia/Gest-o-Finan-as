@@ -2629,6 +2629,9 @@ ul {
     font-size: 1.25rem !important;
     min-height: 48px !important;
     padding-left: 48px !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    background: #ffffff !important;
   }
 
   .member-selector-chips {

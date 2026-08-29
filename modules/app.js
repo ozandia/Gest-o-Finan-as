@@ -935,6 +935,24 @@ function initFormListeners() {
     });
   });
 
+  // Garantia de Dígitos na cor PRETA para todos os campos monetários
+  ['tx-amount', 'deposit-amount', 'budget-limit', 'receipt-extracted-amount', 'voice-interpreted-amount'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const enforceBlack = () => {
+        el.style.setProperty('color', '#000000', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#000000', 'important');
+        el.style.setProperty('background-color', '#ffffff', 'important');
+        el.style.setProperty('caret-color', '#000000', 'important');
+      };
+      enforceBlack();
+      el.addEventListener('input', enforceBlack);
+      el.addEventListener('focus', enforceBlack);
+      el.addEventListener('change', enforceBlack);
+      el.addEventListener('keyup', enforceBlack);
+    }
+  });
+
   // Submit Transação
   document.getElementById('form-transaction')?.addEventListener('submit', (e) => {
     e.preventDefault();
