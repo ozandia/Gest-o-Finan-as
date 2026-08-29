@@ -4,7 +4,7 @@
   "description": "Sistema de Gestão Financeira Inteligente para Ju & Ozi",
   "type": "module",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node scripts/dev-server.js"
   },
   "dependencies": {
     "@vercel/postgres": "^0.10.0"

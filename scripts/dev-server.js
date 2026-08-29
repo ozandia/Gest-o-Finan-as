@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ROOT_DIR = path.resolve(__dirname, '..');
 
 const PORT = 3000;
 const MIME_TYPES = {
@@ -38,7 +39,7 @@ const server = http.createServer((req, res) => {
 
   if (reqUrl === '/') reqUrl = '/index.html';
 
-  const filePath = path.join(__dirname, reqUrl);
+  const filePath = path.join(ROOT_DIR, reqUrl);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
@@ -62,5 +63,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`FinFlow servidor rodando em http://localhost:${PORT}`);
+  console.log(`FinFlow servidor local rodando em http://localhost:${PORT}`);
 });
