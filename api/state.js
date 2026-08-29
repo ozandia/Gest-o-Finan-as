@@ -11,6 +11,24 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // Verificar se o banco de dados Postgres foi conectado no painel da Vercel
+  if (!process.env.POSTGRES_URL && !process.env.DATABASE_URL && !process.env.POSTGRES_PRISMA_URL) {
+    return res.status(200).json({
+      success: true,
+      postgresConnected: false,
+      message: 'Vercel Postgres ainda não conectado nas variáveis de ambiente.',
+      data: {
+        transactions: [],
+        categories: DEFAULT_CATEGORIES,
+        accounts: DEFAULT_ACCOUNTS,
+        budgets: [],
+        goals: [],
+        recurring: [],
+        investments: []
+      }
+    });
+  }
+
   if (req.method === 'GET') {
     try {
       // 1. Verificar se tabelas existem buscando categorias

@@ -41,6 +41,12 @@ export async function initCloudSync(appState, onStateChange) {
     const json = await res.json();
 
     if (json && json.success) {
+      if (json.postgresConnected === false) {
+        isCloudAvailable = false;
+        updateCloudStatusUI('offline', 'Modo Local');
+        return;
+      }
+
       isCloudAvailable = true;
 
       // Se o banco ainda não foi inicializado com tabelas, chama /api/init

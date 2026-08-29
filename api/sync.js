@@ -13,6 +13,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método não permitido. Use POST.' });
   }
 
+  // Verificar se o banco de dados Postgres foi conectado no painel da Vercel
+  if (!process.env.POSTGRES_URL && !process.env.DATABASE_URL && !process.env.POSTGRES_PRISMA_URL) {
+    return res.status(200).json({
+      success: true,
+      postgresConnected: false,
+      message: 'Vercel Postgres ainda não conectado nas variáveis de ambiente.'
+    });
+  }
+
   try {
     const { action, item, id } = req.body || {};
 
