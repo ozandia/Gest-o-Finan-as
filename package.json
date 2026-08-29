@@ -4,6 +4,7 @@
   "description": "Sistema de Gestão Financeira Inteligente para Ju & Ozi",
   "type": "module",
   "scripts": {
+    "build": "echo 'Static build'",
     "dev": "node scripts/dev-server.js"
   },
   "dependencies": {

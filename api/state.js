@@ -1,4 +1,3 @@
-import { sql } from '@vercel/postgres';
 import { DEFAULT_CATEGORIES, DEFAULT_ACCOUNTS } from './init.js';
 
 export default async function handler(req, res) {
@@ -28,6 +27,8 @@ export default async function handler(req, res) {
       }
     });
   }
+
+  const { sql } = await import('@vercel/postgres');
 
   if (req.method === 'GET') {
     try {

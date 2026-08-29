@@ -1,5 +1,3 @@
-import { sql } from '@vercel/postgres';
-
 export const DEFAULT_ACCOUNTS = [
   { id: 'acc_c6', name: 'C6 Bank', type: 'checking', initial_balance: 0.00, color: '#27272a' },
   { id: 'acc_mercadopago', name: 'Mercado Pago', type: 'checking', initial_balance: 0.00, color: '#0284c7' },
@@ -48,6 +46,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { sql } = await import('@vercel/postgres');
     // 1. Criar Tabelas
     await sql`
       CREATE TABLE IF NOT EXISTS accounts (
