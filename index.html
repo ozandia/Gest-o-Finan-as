@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Gestão Financeira • Família Martins</title>
+  <link rel="icon" type="image/jpeg" href="assets/logo_familia_martins.jpg?v=3">
+  
+  <!-- Fontes Google: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Ícones Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js para gráficos interativos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Tesseract.js para leitura inteligente de Prints / OCR de Comprovantes -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- CSS Customizado -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="logo-icon-custom">
+            <img src="assets/logo_familia_martins.jpg?v=3" alt="Família Martins" class="brand-logo-img">
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Gestão Financeira</span>
+            <span class="brand-family-tag">Família Martins</span>
+          </div>
+        </div>
+        <button class="btn-icon mobile-only" id="btn-close-sidebar" aria-label="Fechar menu">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="user-quick-card">
+        <div class="sidebar-dual-avatars">
+          <img src="assets/avatar_ju.jpg" alt="Ju" class="sidebar-avatar ju">
+          <img src="assets/avatar_ozi.jpg" alt="Ozi" class="sidebar-avatar ozi">
+        </div>
+        <div class="user-info">
+          <span class="user-name">Ju & Ozi</span>
+          <span class="user-status"><i class="status-dot"></i> Finanças da Casa</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MENU PRINCIPAL</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link active" data-view="dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Visão Geral</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#transactions" class="nav-link" data-view="transactions">
+              <i data-lucide="arrow-left-right"></i>
+              <span>Transações</span>
+              <span class="badge" id="badge-tx-count">0</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#calendar" class="nav-link" data-view="calendar">
+              <i data-lucide="calendar"></i>
+              <span>Calendário & Fixas</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#invoices" class="nav-link" data-view="invoices">
+              <i data-lucide="receipt"></i>
+              <span>Faturas & Parcelas</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#ai-advisor" class="nav-link" data-view="ai-advisor">
+              <i data-lucide="sparkles"></i>
+              <span>Consultor IA</span>
+              <span class="badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff;">Novo</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#projections" class="nav-link" data-view="projections">
+              <i data-lucide="trending-up"></i>
+              <span>Simulador Liberdade</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#budgets" class="nav-link" data-view="budgets">
+              <i data-lucide="pie-chart"></i>
+              <span>Orçamentos</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#goals" class="nav-link" data-view="goals">
+              <i data-lucide="target"></i>
+              <span>Metas & Cofres</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#accounts" class="nav-link" data-view="accounts">
+              <i data-lucide="credit-card"></i>
+              <span>Contas & Cartões</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link" data-view="reports">
+              <i data-lucide="bar-chart-3"></i>
+              <span>Relatórios & DRE</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">SISTEMA</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#settings" class="nav-link" id="btn-open-settings">
+              <i data-lucide="sliders"></i>
+              <span>Configurações & Backup</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="quick-balance-box">
+          <div class="quick-balance-header">
+            <span>Saldo Consolidado</span>
+            <button class="btn-icon-tiny" id="btn-toggle-visibility" title="Ocultar valores">
+              <i data-lucide="eye" id="eye-icon"></i>
+            </button>
+          </div>
+          <div class="quick-balance-value money-value" id="sidebar-total-balance">R$ 0,00</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="main-wrapper">
+      <!-- HEADER DO TOPO -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="btn-icon mobile-only" id="btn-toggle-sidebar" aria-label="Abrir menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-title-area">
+            <h1 class="page-title" id="current-page-title">Visão Geral</h1>
+            <p class="page-subtitle" id="current-page-subtitle">Acompanhe seu fluxo de caixa e patrimônio em tempo real</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Seletor de Período Global -->
+          <div class="period-selector-wrapper">
+            <i data-lucide="calendar" class="input-icon"></i>
+            <select id="global-period-select" class="custom-select">
+              <option value="current-month">Este Mês</option>
+              <option value="last-month">Mês Anterior</option>
+              <option value="last-90">Últimos 90 Dias</option>
+              <option value="current-year">Ano Atual</option>
+              <option value="all">Todo o Histórico</option>
+            </select>
+          </div>
+
+          <!-- Alternador de Tema -->
+          <button class="btn-icon theme-toggle" id="btn-theme-toggle" title="Alternar tema (Claro/Escuro)">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+
+          <!-- Botão Comando por Voz -->
+          <button class="btn btn-voice" id="btn-voice-header" title="Informar gasto ou receita falando por voz">
+            <i data-lucide="mic"></i>
+            <span>Comando de Voz</span>
+          </button>
+
+          <!-- Botão Importar Gastos (Planilha / Print) -->
+          <button class="btn btn-secondary" id="btn-open-import" title="Importar gastos via Planilha ou Print de tela">
+            <i data-lucide="file-up"></i>
+            <span>Importar Gastos</span>
+          </button>
+
+          <!-- Botão Nova Transação -->
+          <button class="btn btn-primary" id="btn-new-transaction">
+            <i data-lucide="plus-circle"></i>
+            <span>Nova Transação</span>
+            <kbd class="shortcut-kbd">N</kbd>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO DAS VIEWS -->
+      <main class="main-content" id="main-container">
+
+        <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+        <section class="view-section active" id="view-dashboard">
+          <!-- Cards de Métricas Principais (KPIs) -->
+          <div class="kpi-grid">
+            <!-- Card 1: Saldo Geral -->
+            <div class="kpi-card card-glow-primary">
+              <div class="kpi-icon-badge bg-primary-soft">
+                <i data-lucide="wallet"></i>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Saldo Disponível</span>
+                <h3 class="kpi-value money-value" id="kpi-total-balance">R$ 0,00</h3>
+                <div class="kpi-trend" id="kpi-balance-trend">
+                  <span class="trend-indicator positive"><i data-lucide="trending-up"></i> +0.0%</span>
+                  <span class="trend-text">vs mês anterior</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Receitas do Mês -->
+            <div class="kpi-card card-glow-success">
+              <div class="kpi-icon-badge bg-success-soft">
+                <i data-lucide="arrow-down-left"></i>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Receitas Recebidas</span>
+                <h3 class="kpi-value money-value text-success" id="kpi-total-income">R$ 0,00</h3>
+                <div class="kpi-trend" id="kpi-income-pending">
+                  <span class="trend-text text-muted"><i data-lucide="clock"></i> <span id="kpi-income-pending-val">R$ 0,00</span> a receber</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Despesas do Mês -->
+            <div class="kpi-card card-glow-danger">
+              <div class="kpi-icon-badge bg-danger-soft">
+                <i data-lucide="arrow-up-right"></i>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Despesas Pagas</span>
+                <h3 class="kpi-value money-value text-danger" id="kpi-total-expense">R$ 0,00</h3>
+                <div class="kpi-trend" id="kpi-expense-pending">
+                  <span class="trend-text text-muted"><i data-lucide="clock"></i> <span id="kpi-expense-pending-val">R$ 0,00</span> a vencer</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Economia / Taxa de Poupança -->
+            <div class="kpi-card card-glow-warning">
+              <div class="kpi-icon-badge bg-warning-soft">
+                <i data-lucide="piggy-bank"></i>
+              </div>
+              <div class="kpi-body">
+                <span class="kpi-label">Taxa de Economia</span>
+                <h3 class="kpi-value" id="kpi-savings-rate">0%</h3>
+                <div class="kpi-trend">
+                  <span class="trend-text">Sobrou <strong class="money-value text-success" id="kpi-net-savings">R$ 0,00</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção Especial: Receitas Discriminadas de Ju & Ozi (Salários e Diárias) -->
+          <div class="members-revenue-grid">
+            <!-- Card Receitas Ju -->
+            <div class="card member-revenue-card ju-card">
+              <div class="member-card-header">
+                <div class="member-badge-avatar ju" id="avatar-box-ju">
+                  <!-- Inserido via JS ou SVG Inline -->
+                </div>
+                <div class="member-card-title-group">
+                  <h4 class="member-name">Receitas de Ju</h4>
+                  <span class="member-subtitle">Salários & Diárias da Ju</span>
+                </div>
+                <div class="member-total-box">
+                  <span class="member-total-label">Total Ju</span>
+                  <div class="member-total-val money-value" id="ju-total-revenue">R$ 0,00</div>
+                </div>
+              </div>
+              <div class="member-breakdown-row">
+                <div class="breakdown-subitem">
+                  <span class="subitem-label"><i data-lucide="briefcase"></i> Salário</span>
+                  <span class="subitem-val money-value" id="ju-salary-val">R$ 0,00</span>
+                </div>
+                <div class="breakdown-subitem">
+                  <span class="subitem-label"><i data-lucide="calendar-check"></i> Diárias (<span id="ju-diarias-count">0</span>x)</span>
+                  <span class="subitem-val money-value" id="ju-diarias-val">R$ 0,00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Receitas Ozi -->
+            <div class="card member-revenue-card ozi-card">
+              <div class="member-card-header">
+                <div class="member-badge-avatar ozi" id="avatar-box-ozi">
+                  <!-- Inserido via JS ou SVG Inline -->
+                </div>
+                <div class="member-card-title-group">
+                  <h4 class="member-name">Receitas de Ozi</h4>
+                  <span class="member-subtitle">Salários & Diárias da Ozi</span>
+                </div>
+                <div class="member-total-box">
+                  <span class="member-total-label">Total Ozi</span>
+                  <div class="member-total-val money-value" id="ozi-total-revenue">R$ 0,00</div>
+                </div>
+              </div>
+              <div class="member-breakdown-row">
+                <div class="breakdown-subitem">
+                  <span class="subitem-label"><i data-lucide="briefcase"></i> Salário</span>
+                  <span class="subitem-val money-value" id="ozi-salary-val">R$ 0,00</span>
+                </div>
+                <div class="breakdown-subitem">
+                  <span class="subitem-label"><i data-lucide="calendar-check"></i> Diárias (<span id="ozi-diarias-count">0</span>x)</span>
+                  <span class="subitem-val money-value" id="ozi-diarias-val">R$ 0,00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção de Gráficos Principais -->
+          <div class="charts-grid">
+            <!-- Gráfico 1: Fluxo de Caixa Temporal -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Fluxo de Caixa (Entradas vs Saídas)</h3>
+                  <p class="card-subtitle">Comparativo mensal da sua movimentação financeira</p>
+                </div>
+                <div class="chart-actions">
+                  <div class="pill-segmented-control" id="cashflow-granularity">
+                    <button class="pill-btn active" data-range="6months">6 Meses</button>
+                    <button class="pill-btn" data-range="year">12 Meses</button>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-container" style="position: relative; height: 300px;">
+                <canvas id="canvas-cashflow"></canvas>
+              </div>
+            </div>
+
+            <!-- Gráfico 2: Despesas por Categoria -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Distribuição de Gastos</h3>
+                  <p class="card-subtitle">Onde seu dinheiro está sendo aplicado</p>
+                </div>
+              </div>
+              <div class="donut-chart-wrapper">
+                <div class="chart-container donut-container" style="position: relative; height: 220px; width: 220px;">
+                  <canvas id="canvas-categories"></canvas>
+                </div>
+                <div class="categories-legend-list" id="dashboard-categories-legend">
+                  <!-- Inserido dinamicamente via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção Inferior: Orçamentos em Alerta + Últimas Transações -->
+          <div class="dashboard-bottom-grid">
+            <!-- Orçamentos em Risco / Progresso Rápido -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Status dos Orçamentos</h3>
+                  <p class="card-subtitle">Acompanhe os limites definidos para o mês</p>
+                </div>
+                <button class="btn-link" data-view-target="budgets">Ver todos <i data-lucide="chevron-right"></i></button>
+              </div>
+              <div class="card-body">
+                <div class="budget-mini-list" id="dashboard-budget-list">
+                  <!-- Renderizado via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Últimas Transações Recentes -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Transações Recentes</h3>
+                  <p class="card-subtitle">Últimas movimentações registradas</p>
+                </div>
+                <button class="btn-link" data-view-target="transactions">Ver extrato <i data-lucide="chevron-right"></i></button>
+              </div>
+              <div class="card-body p-0">
+                <div class="transaction-list-compact" id="dashboard-recent-txs">
+                  <!-- Renderizado via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 2: TRANSAÇÕES ==================== -->
+        <section class="view-section" id="view-transactions">
+          <div class="card">
+            <!-- Barra de Filtros e Busca -->
+            <div class="filter-toolbar">
+              <div class="search-box">
+                <i data-lucide="search" class="input-icon"></i>
+                <input type="text" id="tx-search-input" placeholder="Buscar por descrição ou valor..." class="form-input">
+                <button class="btn-clear-search hidden" id="btn-clear-tx-search"><i data-lucide="x"></i></button>
+              </div>
+
+              <div class="filters-group">
+                <!-- Filtro Responsável (Ju / Ozi / Ambos) -->
+                <select id="tx-filter-person" class="custom-select">
+                  <option value="all">Todos os Responsáveis</option>
+                  <option value="Ju">Ju</option>
+                  <option value="Ozi">Ozi</option>
+                  <option value="Ambos">Ambos / Casa</option>
+                </select>
+
+                <!-- Filtro Tipo -->
+                <select id="tx-filter-type" class="custom-select">
+                  <option value="all">Todos os Tipos</option>
+                  <option value="income">Receitas (+)</option>
+                  <option value="expense">Despesas (-)</option>
+                  <option value="transfer">Transferências</option>
+                </select>
+
+                <!-- Filtro Categoria -->
+                <select id="tx-filter-category" class="custom-select">
+                  <option value="all">Todas as Categorias</option>
+                </select>
+
+                <!-- Filtro Conta -->
+                <select id="tx-filter-account" class="custom-select">
+                  <option value="all">Todas as Contas</option>
+                </select>
+
+                <!-- Filtro Status -->
+                <select id="tx-filter-status" class="custom-select">
+                  <option value="all">Todos os Status</option>
+                  <option value="paid">Pago / Concluído</option>
+                  <option value="pending">Pendente</option>
+                </select>
+
+                <!-- Ações de Importação, Exportação e Limpeza -->
+                <div class="export-actions">
+                  <button class="btn btn-primary" id="btn-open-import-tx" title="Importar gastos via Planilha ou Print de tela">
+                    <i data-lucide="file-up"></i>
+                    <span>Importar Gastos</span>
+                  </button>
+                  <button class="btn btn-outline" id="btn-export-csv" title="Exportar Extrato para Planilha CSV">
+                    <i data-lucide="download"></i>
+                    <span>Exportar CSV</span>
+                  </button>
+                  <button class="btn btn-danger" id="btn-clear-all-txs" title="Apagar todas as transações cadastradas">
+                    <i data-lucide="trash-2"></i>
+                    <span>Limpar Transações</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabela de Transações -->
+            <div class="table-responsive">
+              <table class="data-table" id="transactions-table">
+                <thead>
+                  <tr>
+                    <th style="width: 48px;">Tipo</th>
+                    <th>Descrição</th>
+                    <th>Responsável</th>
+                    <th>Categoria</th>
+                    <th>Conta / Cartão</th>
+                    <th>Dia / Data</th>
+                    <th>Status</th>
+                    <th class="text-right">Valor</th>
+                    <th class="text-center" style="width: 100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="transactions-table-body">
+                  <!-- Inserido dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Rodapé com Resumo de Filtros e Paginação -->
+            <div class="table-footer">
+              <div class="table-stats">
+                Mostrando <strong id="tx-showing-count">0</strong> de <strong id="tx-total-count">0</strong> lançamentos
+                <span class="divider">|</span>
+                Total Filtrado: <span class="money-value font-mono font-semibold" id="tx-filtered-sum">R$ 0,00</span>
+              </div>
+              <div class="pagination-controls" id="tx-pagination">
+                <!-- Botões de página renderizados dinamicamente -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 3: ORÇAMENTOS ==================== -->
+        <section class="view-section" id="view-budgets">
+          <div class="section-top-bar">
+            <div>
+              <h2 class="section-heading">Planejamento de Orçamentos Mensais</h2>
+              <p class="section-desc">Defina tetos de gastos para cada categoria e mantenha suas contas sob controle</p>
+            </div>
+            <button class="btn btn-primary" id="btn-new-budget">
+              <i data-lucide="plus-circle"></i>
+              <span>Novo Orçamento</span>
+            </button>
+          </div>
+
+          <!-- Cards de Resumo Geral dos Orçamentos -->
+          <div class="budget-summary-grid">
+            <div class="card budget-kpi-card">
+              <span class="text-muted">Total Orçado no Mês</span>
+              <h3 class="money-value text-primary" id="budget-total-planned">R$ 0,00</h3>
+            </div>
+            <div class="card budget-kpi-card">
+              <span class="text-muted">Total Já Consumido</span>
+              <h3 class="money-value text-danger" id="budget-total-spent">R$ 0,00</h3>
+            </div>
+            <div class="card budget-kpi-card">
+              <span class="text-muted">Disponível para Gastar</span>
+              <h3 class="money-value text-success" id="budget-total-remaining">R$ 0,00</h3>
+            </div>
+          </div>
+
+          <!-- Grid com os cartões detalhados por categoria -->
+          <div class="budget-cards-grid" id="budgets-container">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 4: METAS & COFRES ==================== -->
+        <section class="view-section" id="view-goals">
+          <div class="section-top-bar">
+            <div>
+              <h2 class="section-heading">Metas Financeiras & Sonhos</h2>
+              <p class="section-desc">Poupe com propósito. Acompanhe a evolução da sua reserva e conquistas</p>
+            </div>
+            <button class="btn btn-primary" id="btn-new-goal">
+              <i data-lucide="plus-circle"></i>
+              <span>Nova Meta</span>
+            </button>
+          </div>
+
+          <div class="goals-summary-row">
+            <div class="card goal-stat-banner">
+              <div class="goal-stat-item">
+                <i data-lucide="trophy" class="text-warning"></i>
+                <div>
+                  <span class="text-muted">Total em Metas</span>
+                  <h4 class="money-value" id="goals-total-accumulated">R$ 0,00</h4>
+                </div>
+              </div>
+              <div class="goal-stat-item">
+                <i data-lucide="flag" class="text-primary"></i>
+                <div>
+                  <span class="text-muted">Objetivo Geral</span>
+                  <h4 class="money-value" id="goals-total-target">R$ 0,00</h4>
+                </div>
+              </div>
+              <div class="goal-stat-item">
+                <i data-lucide="percent" class="text-success"></i>
+                <div>
+                  <span class="text-muted">Progresso Geral</span>
+                  <h4 id="goals-general-percent">0%</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid de Cartões de Metas -->
+          <div class="goals-grid" id="goals-container">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 5: CONTAS & CARTÕES ==================== -->
+        <section class="view-section" id="view-accounts">
+          <div class="section-top-bar">
+            <div>
+              <h2 class="section-heading">Minhas Contas e Cartões</h2>
+              <p class="section-desc">Gerencie saldos bancários, carteiras físicas e limites de cartões de crédito</p>
+            </div>
+            <button class="btn btn-primary" id="btn-new-account">
+              <i data-lucide="plus-circle"></i>
+              <span>Adicionar Conta / Cartão</span>
+            </button>
+          </div>
+
+          <!-- Grid de Contas -->
+          <div class="accounts-grid" id="accounts-container">
+            <!-- Renderizado via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 6: RELATÓRIOS & DRE ==================== -->
+        <section class="view-section" id="view-reports">
+          <div class="section-top-bar">
+            <div>
+              <h2 class="section-heading">Relatório de Desempenho Financeiro</h2>
+              <p class="section-desc">Análise profunda e demonstrativo simplificado de receitas e despesas</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-outline" onclick="window.print()">
+                <i data-lucide="printer"></i>
+                <span>Imprimir Relatório</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="reports-grid">
+            <!-- Demonstrativo DRE Simplificado -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Demonstrativo de Resultado (DRE Pessoal)</h3>
+              </div>
+              <div class="card-body">
+                <div class="dre-table-wrapper">
+                  <table class="dre-table" id="dre-table">
+                    <tbody>
+                      <tr class="dre-row header-row">
+                        <td><strong>(+) RECEITAS TOTAIS</strong></td>
+                        <td class="text-right text-success"><strong class="money-value" id="dre-total-income">R$ 0,00</strong></td>
+                      </tr>
+                      <tr class="dre-row sub-row">
+                        <td>Receitas Fixas (Salário, Contratos)</td>
+                        <td class="text-right money-value" id="dre-fixed-income">R$ 0,00</td>
+                      </tr>
+                      <tr class="dre-row sub-row">
+                        <td>Receitas Extras & Investimentos</td>
+                        <td class="text-right money-value" id="dre-extra-income">R$ 0,00</td>
+                      </tr>
+                      <tr class="dre-row separator"><td colspan="2"></td></tr>
+                      <tr class="dre-row header-row">
+                        <td><strong>(-) DESPESAS ESSENCIAIS (Necessidades)</strong></td>
+                        <td class="text-right text-danger"><strong class="money-value" id="dre-essential-expenses">R$ 0,00</strong></td>
+                      </tr>
+                      <tr class="dre-row sub-row">
+                        <td>Moradia, Alimentação, Saúde, Transporte</td>
+                        <td class="text-right money-value" id="dre-essential-detail">R$ 0,00</td>
+                      </tr>
+                      <tr class="dre-row header-row">
+                        <td><strong>(-) DESPESAS NÃO ESSENCIAIS (Estilo de Vida)</strong></td>
+                        <td class="text-right text-danger"><strong class="money-value" id="dre-lifestyle-expenses">R$ 0,00</strong></td>
+                      </tr>
+                      <tr class="dre-row sub-row">
+                        <td>Lazer, Restaurantes, Compras, Assinaturas</td>
+                        <td class="text-right money-value" id="dre-lifestyle-detail">R$ 0,00</td>
+                      </tr>
+                      <tr class="dre-row separator"><td colspan="2"></td></tr>
+                      <tr class="dre-row result-row">
+                        <td><strong>(=) RESULTADO LÍQUIDO DO PERÍODO</strong></td>
+                        <td class="text-right"><strong class="money-value font-mono font-bold" id="dre-net-result">R$ 0,00</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Maiores Gastos por Categoria -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Ranking de Gastos por Categoria</h3>
+              </div>
+              <div class="card-body">
+                <div class="category-ranking-list" id="report-category-ranking">
+                  <!-- Renderizado via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 7: CALENDÁRIO & CONTAS FIXAS ==================== -->
+        <section class="view-section" id="view-calendar">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Calendário & Contas Fixas</h1>
+              <p class="view-subtitle">Acompanhe os vencimentos de contas e programe despesas/receitas recorrentes</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-primary" id="btn-open-new-recurring">
+                <i data-lucide="plus"></i>
+                <span>Nova Conta Fixa</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-layout-grid">
+            <!-- Coluna Principal do Calendário -->
+            <div class="card calendar-card">
+              <div class="calendar-nav-bar">
+                <div class="cal-nav-left">
+                  <button class="btn-icon" id="btn-cal-prev-month" title="Mês anterior"><i data-lucide="chevron-left"></i></button>
+                  <h3 class="cal-month-title" id="calendar-month-year-title">Agosto de 2026</h3>
+                  <button class="btn-icon" id="btn-cal-next-month" title="Próximo mês"><i data-lucide="chevron-right"></i></button>
+                </div>
+                <button class="btn btn-outline btn-sm" id="btn-cal-today">Hoje</button>
+              </div>
+
+              <div class="calendar-weekdays-header">
+                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+              </div>
+              <div class="calendar-days-grid" id="calendar-days-grid">
+                <!-- Dias gerados via JS -->
+              </div>
+            </div>
+
+            <!-- Coluna Lateral de Detalhes do Dia e Contas Fixas -->
+            <div class="calendar-sidebar-col">
+              <!-- Detalhes do Dia Selecionado -->
+              <div class="card" id="calendar-day-details">
+                <!-- Preenchido via JS -->
+              </div>
+
+              <!-- Lista de Contas Fixas Recorrentes -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Contas Recorrentes da Família</h3>
+                </div>
+                <div class="card-body">
+                  <div class="recurring-bills-list" id="recurring-bills-list">
+                    <!-- Preenchido via JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 8: FATURAS & COMPRAS PARCELADAS ==================== -->
+        <section class="view-section" id="view-invoices">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Faturas & Compras Parceladas</h1>
+              <p class="view-subtitle">Acompanhe a projeção dos cartões C6, Mercado Pago e Nubank para os próximos meses</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-primary" id="btn-open-new-installment">
+                <i data-lucide="plus"></i>
+                <span>Nova Compra Parcelada</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPIs de Faturas -->
+          <div class="kpi-grid">
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-danger-soft text-danger">
+                <i data-lucide="receipt"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Limite Futuro Comprometido</span>
+                <h2 class="kpi-value money-value text-danger" id="kpi-invoices-committed">R$ 0,00</h2>
+                <span class="kpi-badge">Soma dos próximos 6 meses</span>
+              </div>
+            </div>
+
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-warning-soft text-warning">
+                <i data-lucide="calendar-arrow-right"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Projeção da Próxima Fatura</span>
+                <h2 class="kpi-value money-value" id="kpi-next-month-invoice">R$ 0,00</h2>
+                <span class="kpi-badge">Estimativa para o próximo mês</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grade de Projeção Mês a Mês -->
+          <div class="section-divider-title" style="margin-top: 20px;">
+            <h3>Projeção de Faturas por Mês</h3>
+          </div>
+          <div class="invoices-projection-grid" id="invoices-projection-container">
+            <!-- Preenchido via JS -->
+          </div>
+
+          <!-- Compras Parceladas Ativas -->
+          <div class="section-divider-title" style="margin-top: 24px;">
+            <h3>Planos de Parcelamento em Andamento</h3>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="active-installments-list" id="active-installments-list">
+                <!-- Preenchido via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 9: CONSULTOR IA FINANCEIRO ==================== -->
+        <section class="view-section" id="view-ai-advisor">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Consultor IA • Família Martins 👑🤖</h1>
+              <p class="view-subtitle">Inteligência financeira em tempo real para análises, cálculos de diárias e dicas do casal</p>
+            </div>
+          </div>
+
+          <div class="ai-chat-card card">
+            <div class="ai-chat-header">
+              <div class="ai-header-left">
+                <div class="ai-avatar-badge">
+                  <i data-lucide="sparkles"></i>
+                </div>
+                <div>
+                  <strong class="ai-bot-title">Consultor Financeiro Família Martins</strong>
+                  <span class="ai-bot-status"><i class="status-dot"></i> Online & Conectado aos Dados Reais</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Área de Mensagens -->
+            <div class="ai-chat-messages" id="ai-chat-messages">
+              <div class="ai-chat-bubble bot-bubble">
+                <div class="bubble-avatar"><i data-lucide="sparkles"></i></div>
+                <div class="bubble-content">
+                  <div class="bot-header">
+                    <strong>Consultor IA Martins</strong>
+                    <span class="bot-time">Agora</span>
+                  </div>
+                  <div class="bot-body">
+                    <p>Olá <strong>Ju & Ozi</strong>! 👋 Sou o assistente financeiro inteligente da Família Martins. Estou conectado às suas contas (**C6, Mercado Pago e Nubank**), extratos, metas e categorias.</p>
+                    <p>Como posso ajudar vocês hoje?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sugestões Rápidas de Perguntas -->
+            <div class="ai-chat-suggestions">
+              <span class="suggestions-label">💡 Perguntas Rápidas:</span>
+              <div class="ai-chips-scroll">
+                <button class="ai-suggest-chip" data-question="Resumo geral das finanças do mês">📊 Resumo do Mês</button>
+                <button class="ai-suggest-chip" data-question="Quanto a Ju e a Ozi receberam de diárias?">💵 Diárias de Ju & Ozi</button>
+                <button class="ai-suggest-chip" data-question="Quais foram as maiores despesas por categoria?">🛒 Maiores Gastos</button>
+                <button class="ai-suggest-chip" data-question="Quanto gastamos nos cartões C6, Mercado Pago e Nubank?">💳 Gastos por Cartão</button>
+                <button class="ai-suggest-chip" data-question="Qual o progresso das nossas metas?">🎯 Status das Metas</button>
+              </div>
+            </div>
+
+            <!-- Barra de Envio de Pergunta -->
+            <div class="ai-chat-input-bar">
+              <input type="text" id="ai-chat-input" placeholder="Faça uma pergunta sobre seus gastos, contas ou diárias..." class="form-input">
+              <button class="btn btn-primary btn-icon-send" id="btn-send-ai-chat" aria-label="Enviar Pergunta">
+                <i data-lucide="send"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 10: SIMULADOR DE LIBERDADE FINANCEIRA & INVESTIMENTOS ==================== -->
+        <section class="view-section" id="view-projections">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Simulador de Liberdade & Investimentos</h1>
+              <p class="view-subtitle">Cadastre os investimentos da Família Martins e simule o crescimento patrimonial com juros compostos</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-primary" id="btn-open-new-investment">
+                <i data-lucide="plus"></i>
+                <span>Novo Investimento</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPIs da Carteira e Simulação -->
+          <div class="kpi-grid">
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-success-soft text-success">
+                <i data-lucide="wallet"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Total Investido (Carteira)</span>
+                <h2 class="kpi-value money-value text-success font-bold" id="kpi-investments-total">R$ 0,00</h2>
+                <span class="kpi-badge">Patrimônio em ativos da família</span>
+              </div>
+            </div>
+
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-primary-soft text-primary">
+                <i data-lucide="percent"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Rentabilidade Ponderada</span>
+                <h2 class="kpi-value font-mono font-bold text-primary" id="kpi-investments-yield">0.0% a.a.</h2>
+                <span class="kpi-badge">Média da carteira</span>
+              </div>
+            </div>
+
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-info-soft text-info">
+                <i data-lucide="coins"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Renda Passiva Estimada</span>
+                <h2 class="kpi-value money-value text-info font-bold" id="proj-kpi-passive-income">R$ 0,00/mês</h2>
+                <span class="kpi-badge">Rendimento mensal atual</span>
+              </div>
+            </div>
+
+            <div class="card kpi-card">
+              <div class="kpi-icon-wrapper bg-warning-soft text-warning">
+                <i data-lucide="trending-up"></i>
+              </div>
+              <div class="kpi-content">
+                <span class="kpi-title">Patrimônio Futuro (Simulado)</span>
+                <h2 class="kpi-value money-value text-warning font-bold" id="proj-kpi-final-total">R$ 0,00</h2>
+                <span class="kpi-badge">Ao final do prazo selecionado</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Carteira de Investimentos Cadastrados -->
+          <div class="section-divider-title" style="margin-top: 24px;">
+            <h3>Carteira de Investimentos da Família Martins</h3>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="investments-portfolio-list" id="investments-portfolio-list">
+                <!-- Inserido dinamicamente via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulador Interativo de Cenários Futuros -->
+          <div class="section-divider-title" style="margin-top: 28px;">
+            <h3>Simulador de Cenários & Independência Financeira</h3>
+          </div>
+          <div class="simulator-layout-grid">
+            <!-- Painel de Sliders / Parâmetros -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Parâmetros da Simulação</h3>
+              </div>
+              <div class="card-body">
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <label>Aporte Mensal Adicional</label>
+                    <strong class="font-mono text-primary" id="proj-val-deposit">R$ 0,00</strong>
+                  </div>
+                  <input type="range" id="proj-slider-deposit" min="0" max="5000" step="50" value="0" class="custom-slider">
+                  <div class="slider-ticks"><span>R$ 0</span><span>R$ 2.500</span><span>R$ 5.000</span></div>
+                </div>
+
+                <div class="slider-group" style="margin-top: 18px;">
+                  <div class="slider-header">
+                    <label>Rentabilidade Anual Estimada (CDI/CDB/FIIs)</label>
+                    <strong class="font-mono text-success" id="proj-val-rate">0.0% a.a.</strong>
+                  </div>
+                  <input type="range" id="proj-slider-rate" min="0" max="20" step="0.5" value="0" class="custom-slider">
+                  <div class="slider-ticks"><span>0% a.a.</span><span>10% a.a.</span><span>20% a.a.</span></div>
+                </div>
+
+                <div class="slider-group" style="margin-top: 18px;">
+                  <div class="slider-header">
+                    <label>Prazo de Simulação</label>
+                    <strong class="font-mono text-warning" id="proj-val-months">0 meses (0 anos)</strong>
+                  </div>
+                  <input type="range" id="proj-slider-months" min="0" max="60" step="1" value="0" class="custom-slider">
+                  <div class="slider-ticks"><span>0 meses</span><span>2.5 anos</span><span>5 anos</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráfico de Projeção -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <h3 class="card-title">Curva de Crescimento Patrimonial</h3>
+              </div>
+              <div class="card-body" style="height: 320px;">
+                <canvas id="projectionChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVA/EDITAR TRANSAÇÃO ==================== -->
+  <div class="modal-backdrop" id="modal-transaction" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-tx-title">Nova Transação</h3>
+          <p class="modal-subtitle">Preencha os detalhes ou fale por comando de voz</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn-icon btn-voice-tiny" id="btn-voice-modal-tx" title="Preencher este lançamento por voz">
+            <i data-lucide="mic"></i>
+          </button>
+          <button class="btn-close-modal" id="btn-close-tx-modal" aria-label="Fechar">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+
+      <form id="form-transaction" class="modal-form">
+        <input type="hidden" id="tx-id">
+
+        <!-- Seletor de Tipo (Receita, Despesa, Transferência) -->
+        <div class="type-selector-tabs">
+          <label class="type-tab expense active">
+            <input type="radio" name="tx-type" value="expense" checked>
+            <i data-lucide="arrow-up-right"></i>
+            <span>Despesa</span>
+          </label>
+          <label class="type-tab income">
+            <input type="radio" name="tx-type" value="income">
+            <i data-lucide="arrow-down-left"></i>
+            <span>Receita</span>
+          </label>
+          <label class="type-tab transfer">
+            <input type="radio" name="tx-type" value="transfer">
+            <i data-lucide="arrow-left-right"></i>
+            <span>Transferência</span>
+          </label>
+        </div>
+
+        <!-- Seletor de Responsável (Ju, Ozi, Ambos) -->
+        <div class="form-group">
+          <label class="form-label">Quem é o Responsável?</label>
+          <div class="member-selector-chips">
+            <label class="member-chip ju active">
+              <input type="radio" name="tx-person" value="Ju" checked>
+              <span class="chip-avatar-icon ju" id="chip-avatar-ju">
+                <img src="assets/avatar_ju.jpg" alt="Ju" class="avatar-img">
+              </span>
+              <strong class="chip-name">Ju</strong>
+            </label>
+            <label class="member-chip ozi">
+              <input type="radio" name="tx-person" value="Ozi">
+              <span class="chip-avatar-icon ozi" id="chip-avatar-ozi">
+                <img src="assets/avatar_ozi.jpg" alt="Ozi" class="avatar-img">
+              </span>
+              <strong class="chip-name">Ozi</strong>
+            </label>
+            <label class="member-chip ambos">
+              <input type="radio" name="tx-person" value="Ambos">
+              <span class="chip-avatar-icon ambos" id="chip-avatar-ambos">
+                <div class="avatar-dual-badge">
+                  <img src="assets/avatar_ju.jpg" alt="Ju" class="dual-avatar-img left">
+                  <img src="assets/avatar_ozi.jpg" alt="Ozi" class="dual-avatar-img right">
+                </div>
+              </span>
+              <strong class="chip-name">Ambos</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- Campo Valor com destaque -->
+        <div class="form-group">
+          <label for="tx-amount" class="form-label">Valor da Transação (R$)</label>
+          <div class="input-money-wrapper">
+            <span class="currency-symbol">R$</span>
+            <input type="number" step="0.01" min="0.01" id="tx-amount" placeholder="0,00" required class="input-money">
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-group">
+          <label for="tx-desc" class="form-label">Descrição</label>
+          <input type="text" id="tx-desc" placeholder="Ex: Supermercado Carrefour, Salário, Uber" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <!-- Categoria -->
+          <div class="form-group" id="group-tx-category">
+            <label for="tx-category" class="form-label">Categoria</label>
+            <select id="tx-category" class="custom-select" required>
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+
+          <!-- Subcategoria -->
+          <div class="form-group" id="group-tx-subcategory">
+            <label for="tx-subcategory" class="form-label">Subcategoria</label>
+            <select id="tx-subcategory" class="custom-select">
+              <!-- Preenchido via JS dinamicamente -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <!-- Conta / Cartão -->
+          <div class="form-group">
+            <label for="tx-account" class="form-label" id="label-tx-account">Conta / Cartão</label>
+            <select id="tx-account" class="custom-select" required>
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+
+          <!-- Data / Dia -->
+          <div class="form-group">
+            <label for="tx-date" class="form-label">Dia / Data</label>
+            <input type="date" id="tx-date" class="form-input" required>
+          </div>
+        </div>
+
+        <!-- Conta Destino (Apenas para transferências) -->
+        <div class="form-group hidden" id="group-tx-destination">
+          <label for="tx-destination-account" class="form-label">Conta Destino</label>
+          <select id="tx-destination-account" class="custom-select">
+            <!-- Preenchido via JS -->
+          </select>
+        </div>
+
+        <div class="form-row-2">
+          <!-- Status de Pagamento -->
+          <div class="form-group">
+            <label for="tx-status" class="form-label">Situação</label>
+            <select id="tx-status" class="custom-select" required>
+              <option value="paid">Pago / Concluído</option>
+              <option value="pending">Pendente / Agendado</option>
+            </select>
+          </div>
+
+          <!-- Parcelas / Repetição Opcional -->
+          <div class="form-group" id="group-tx-installments">
+            <label for="tx-installments" class="form-label">Parcelamento / Recorrência</label>
+            <select id="tx-installments" class="custom-select">
+              <option value="1">Pagamento Único (À vista)</option>
+              <option value="2">2x parcelas mensais</option>
+              <option value="3">3x parcelas mensais</option>
+              <option value="4">4x parcelas mensais</option>
+              <option value="5">5x parcelas mensais</option>
+              <option value="6">6x parcelas mensais</option>
+              <option value="10">10x parcelas mensais</option>
+              <option value="12">12x parcelas mensais</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-tx">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-tx">
+            <i data-lucide="check"></i>
+            <span>Salvar Transação</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVA/EDITAR META ==================== -->
+  <div class="modal-backdrop" id="modal-goal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-goal-title">Nova Meta Financeira</h3>
+          <p class="modal-subtitle">Defina seus objetivos para poupar com foco</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-goal-modal"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-goal" class="modal-form">
+        <input type="hidden" id="goal-id">
+
+        <div class="form-group">
+          <label for="goal-name" class="form-label">Nome da Meta</label>
+          <input type="text" id="goal-name" placeholder="Ex: Reserva de Emergência, Viagem, Carro" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goal-target" class="form-label">Valor Alvo (R$)</label>
+            <input type="number" step="0.01" min="1" id="goal-target" placeholder="10000.00" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="goal-current" class="form-label">Valor Inicial Já Guardado (R$)</label>
+            <input type="number" step="0.01" min="0" id="goal-current" placeholder="0.00" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goal-deadline" class="form-label">Data Limite Desejada</label>
+            <input type="date" id="goal-deadline" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="goal-icon" class="form-label">Ícone / Tema</label>
+            <select id="goal-icon" class="custom-select">
+              <option value="shield-check">🛡️ Segurança / Reserva</option>
+              <option value="plane">✈️ Viagem & Férias</option>
+              <option value="car">🚗 Veículo / Carro</option>
+              <option value="home">🏠 Casa Própria / Reforma</option>
+              <option value="laptop">💻 Tecnologia / Equipamento</option>
+              <option value="graduation-cap">🎓 Educação / Cursos</option>
+              <option value="heart">💖 Sonho Pessoal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-goal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: APORTE EM META ==================== -->
+  <div class="modal-backdrop" id="modal-deposit-goal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Guardar Dinheiro na Meta</h3>
+          <p class="modal-subtitle" id="deposit-goal-subtitle">Aportar na meta</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-deposit-modal"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-deposit-goal" class="modal-form">
+        <input type="hidden" id="deposit-goal-id">
+
+        <div class="form-group">
+          <label for="deposit-amount" class="form-label">Valor do Aporte (R$)</label>
+          <div class="input-money-wrapper">
+            <span class="currency-symbol">R$</span>
+            <input type="number" step="0.01" min="0.01" id="deposit-amount" placeholder="0,00" required class="input-money">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="deposit-account" class="form-label">Debitar da Conta</label>
+          <select id="deposit-account" class="custom-select" required>
+            <!-- Preenchido via JS -->
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-deposit">Cancelar</button>
+          <button type="submit" class="btn btn-success">Confirmar Aporte</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVO/EDITAR ORÇAMENTO ==================== -->
+  <div class="modal-backdrop" id="modal-budget" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-budget-title">Configurar Orçamento</h3>
+          <p class="modal-subtitle">Estipule o teto mensal para uma categoria de despesa</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-budget-modal"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-budget" class="modal-form">
+        <input type="hidden" id="budget-id">
+
+        <div class="form-group">
+          <label for="budget-category" class="form-label">Categoria</label>
+          <select id="budget-category" class="custom-select" required>
+            <!-- Preenchido via JS -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="budget-limit" class="form-label">Limite Mensal Máximo (R$)</label>
+          <div class="input-money-wrapper">
+            <span class="currency-symbol">R$</span>
+            <input type="number" step="0.01" min="1" id="budget-limit" placeholder="Ex: 1200,00" required class="input-money">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-budget">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Orçamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVA/EDITAR CONTA ==================== -->
+  <div class="modal-backdrop" id="modal-account" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-account-title">Nova Conta / Cartão</h3>
+          <p class="modal-subtitle">Cadastre uma conta bancária, carteira ou cartão</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-account-modal"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-account" class="modal-form">
+        <input type="hidden" id="account-id">
+
+        <div class="form-group">
+          <label for="account-name" class="form-label">Nome da Conta / Instituição</label>
+          <input type="text" id="account-name" placeholder="Ex: Nubank, Itaú, Dinheiro em Mãos, Cartão XP" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="account-type" class="form-label">Tipo de Conta</label>
+            <select id="account-type" class="custom-select" required>
+              <option value="checking">Conta Corrente / Carteira Digital</option>
+              <option value="savings">Conta Poupança / Reserva</option>
+              <option value="credit">Cartão de Crédito</option>
+              <option value="cash">Dinheiro em Espécie</option>
+              <option value="investment">Corretora / Investimentos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="account-balance" class="form-label">Saldo Inicial (R$)</label>
+            <input type="number" step="0.01" id="account-balance" placeholder="0.00" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Cor de Identificação</label>
+          <div class="color-picker-palette" id="account-color-palette">
+            <!-- Opções de cores geradas via JS -->
+          </div>
+          <input type="hidden" id="account-color" value="#6366f1">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-account">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CONFIGURAÇÕES & BACKUP ==================== -->
+  <div class="modal-backdrop" id="modal-settings" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Configurações & Dados</h3>
+          <p class="modal-subtitle">Gerenciamento de backup local e segurança</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-settings-modal"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="settings-content">
+        <div class="settings-card">
+          <div class="settings-card-icon bg-primary-soft text-primary">
+            <i data-lucide="hard-drive-download"></i>
+          </div>
+          <div class="settings-card-info">
+            <h4>Exportar Backup de Dados (JSON)</h4>
+            <p>Faça o download de todas as suas transações, metas e contas salvas no navegador.</p>
+          </div>
+          <button class="btn btn-outline" id="btn-export-backup">Exportar</button>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-icon bg-success-soft text-success">
+            <i data-lucide="hard-drive-upload"></i>
+          </div>
+          <div class="settings-card-info">
+            <h4>Restaurar Backup (JSON)</h4>
+            <p>Carregue um arquivo JSON exportado anteriormente para recuperar seus dados.</p>
+          </div>
+          <label class="btn btn-outline cursor-pointer">
+            Importar
+            <input type="file" id="input-import-backup" accept=".json" class="hidden">
+          </label>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-icon bg-warning-soft text-warning">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div class="settings-card-info">
+            <h4>Recarregar Dados de Demonstração</h4>
+            <p>Preenche o aplicativo com lançamentos e categorias de exemplo realistas.</p>
+          </div>
+          <button class="btn btn-secondary" id="btn-load-demo-data">Carregar Demo</button>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-icon bg-danger-soft text-danger">
+            <i data-lucide="receipt"></i>
+          </div>
+          <div class="settings-card-info">
+            <h4>Limpar Apenas Transações</h4>
+            <p>Remove todos os lançamentos do extrato mantendo suas contas e metas salvas.</p>
+          </div>
+          <button class="btn btn-outline" id="btn-clear-tx-settings" style="color: var(--danger); border-color: var(--danger);">Limpar Extrato</button>
+        </div>
+
+        <div class="settings-card danger-zone">
+          <div class="settings-card-icon bg-danger-soft text-danger">
+            <i data-lucide="trash-2"></i>
+          </div>
+          <div class="settings-card-info">
+            <h4 class="text-danger">Zerar Todos os Dados</h4>
+            <p>Apaga permanentemente todas as informações salvas no navegador.</p>
+          </div>
+          <button class="btn btn-danger" id="btn-wipe-data">Zerar Tudo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: IMPORTAÇÃO INTELIGENTE (PLANILHAS & PRINTS) ==================== -->
+  <div class="modal-backdrop" id="modal-import" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Central de Importação Inteligente</h3>
+          <p class="modal-subtitle">Importe gastos em lote via planilha ou faça leitura automática de prints de tela e comprovantes</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-import-modal" aria-label="Fechar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Abas de Importação -->
+      <div class="import-tabs-header">
+        <button class="import-tab-btn active" data-tab="tab-spreadsheet">
+          <i data-lucide="table"></i>
+          <span>1. Importar Planilha (CSV / Excel)</span>
+        </button>
+        <button class="import-tab-btn" data-tab="tab-receipt">
+          <i data-lucide="scan-line"></i>
+          <span>2. Ler Print / Comprovante (OCR)</span>
+        </button>
+      </div>
+
+      <!-- CONTEÚDO DA ABA 1: PLANILHA -->
+      <div class="import-tab-content active" id="tab-spreadsheet">
+        <!-- Zona de Upload de Planilha -->
+        <div class="dropzone-box" id="spreadsheet-dropzone">
+          <input type="file" id="input-spreadsheet-file" accept=".csv, .txt, .tsv" class="hidden">
+          <div class="dropzone-icon bg-primary-soft text-primary">
+            <i data-lucide="file-spreadsheet"></i>
+          </div>
+          <h4>Arraste e solte seu arquivo de planilha (.csv) aqui</h4>
+          <p class="text-muted">Compatível com extratos do Nubank, Itaú, Inter, C6, Bradesco ou planilhas Excel</p>
+          <button type="button" class="btn btn-outline" id="btn-select-spreadsheet">
+            <i data-lucide="folder-open"></i>
+            <span>Selecionar Arquivo no Computador</span>
+          </button>
+        </div>
+
+        <!-- Opção de colar texto da planilha -->
+        <div class="collapsible-section" style="margin-top: 16px;">
+          <button type="button" class="btn-link" id="btn-toggle-paste-csv">
+            <i data-lucide="chevron-down" id="paste-csv-chevron"></i>
+            <span>Ou colar linhas da planilha / texto copiado</span>
+          </button>
+          <div class="hidden" id="paste-csv-container" style="margin-top: 10px;">
+            <textarea id="textarea-paste-csv" class="form-input" rows="4" placeholder="Cole aqui linhas copiadas do Excel (ex: 28/08/2026; Supermercado; -150.00)"></textarea>
+            <button type="button" class="btn btn-secondary" id="btn-parse-pasted-csv" style="margin-top: 8px;">
+              <i data-lucide="play"></i>
+              <span>Processar Texto Colado</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Configurações Rápidas Padrão para os Itens Importados -->
+        <div class="form-row-2" style="margin-top: 16px;">
+          <div class="form-group">
+            <label class="form-label">Atribuir Responsável Padrão</label>
+            <select id="import-default-person" class="custom-select">
+              <option value="Ambos">👥 Ambos / Casa</option>
+              <option value="Ju">👩 Ju</option>
+              <option value="Ozi">👩 Ozi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Conta Bancária de Destino</label>
+            <select id="import-default-account" class="custom-select">
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabela de Pré-visualização dos Gastos Detectados -->
+        <div class="hidden" id="spreadsheet-preview-wrapper" style="margin-top: 20px;">
+          <div class="preview-header-bar">
+            <div>
+              <h4 class="font-bold">Lançamentos Detectados (<span id="parsed-tx-count">0</span>)</h4>
+              <p class="text-muted" style="font-size: 0.8rem;">Revise e ajuste antes de confirmar</p>
+            </div>
+            <div class="preview-total-tag">
+              Total: <strong class="font-mono" id="parsed-tx-total">R$ 0,00</strong>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+            <table class="data-table" id="parsed-spreadsheet-table">
+              <thead>
+                <tr>
+                  <th style="width: 32px;"><input type="checkbox" id="check-all-parsed" checked></th>
+                  <th>Dia / Data</th>
+                  <th>Descrição</th>
+                  <th>Responsável</th>
+                  <th>Categoria</th>
+                  <th class="text-right">Valor</th>
+                </tr>
+              </thead>
+              <tbody id="parsed-spreadsheet-body">
+                <!-- Inserido dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="modal-footer" style="margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-import-preview">Limpar</button>
+            <button type="button" class="btn btn-success" id="btn-confirm-import-spreadsheet">
+              <i data-lucide="check-circle-2"></i>
+              <span id="btn-confirm-import-label">Confirmar Importação</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO DA ABA 2: PRINT DE TELA / COMPROVANTE (OCR) -->
+      <div class="import-tab-content" id="tab-receipt">
+        <!-- Zona de Upload de Imagem ou Ctrl+V -->
+        <div class="dropzone-box" id="receipt-dropzone">
+          <input type="file" id="input-receipt-file" accept="image/*" class="hidden">
+          <div class="dropzone-icon bg-warning-soft text-warning">
+            <i data-lucide="camera"></i>
+          </div>
+          <h4>Cole seu print de tela aqui com <kbd class="shortcut-kbd">Ctrl + V</kbd></h4>
+          <p class="text-muted">Ou arraste um print de comprovante Pix, fatura de cartão, recibo ou cupom fiscal</p>
+          <button type="button" class="btn btn-outline" id="btn-select-receipt-img">
+            <i data-lucide="image"></i>
+            <span>Escolher Imagem do Comprovante</span>
+          </button>
+        </div>
+
+        <!-- Barra de Progresso do Scanner OCR -->
+        <div class="hidden" id="ocr-scanner-status" style="margin-top: 20px;">
+          <div class="ocr-status-card">
+            <div class="ocr-spinner"></div>
+            <div class="ocr-status-info">
+              <h4 id="ocr-status-title">Lendo e analisando print de tela...</h4>
+              <p class="text-muted" id="ocr-status-detail">Identificando valores em R$, data do gasto e estabelecimento</p>
+              <div class="progress-track" style="margin-top: 8px;">
+                <div class="progress-bar safe" id="ocr-progress-bar" style="width: 30%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Painel Dividido: Imagem do Print à Esquerda + Dados Extraídos à Direita -->
+        <div class="hidden" id="receipt-extracted-view" style="margin-top: 20px;">
+          <div class="receipt-split-grid">
+            <!-- Imagem do Comprovante -->
+            <div class="receipt-image-preview-card">
+              <img id="receipt-preview-img" src="" alt="Comprovante" class="receipt-img">
+              <span class="badge" style="margin-top: 8px; align-self: flex-start;">
+                <i data-lucide="check" style="width: 12px; height: 12px;"></i> Leitura Concluída
+              </span>
+            </div>
+
+            <!-- Formulário com os dados auto-preenchidos pela inteligência de leitura -->
+            <form id="form-receipt-extracted" class="receipt-form-extracted">
+              <div class="form-group">
+                <label class="form-label text-success font-bold">Valor Detectado no Print (R$)</label>
+                <div class="input-money-wrapper">
+                  <span class="currency-symbol">R$</span>
+                  <input type="number" step="0.01" min="0.01" id="receipt-extracted-amount" placeholder="0,00" required class="input-money text-success font-bold">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Descrição / Estabelecimento</label>
+                <input type="text" id="receipt-extracted-desc" placeholder="Ex: Mercado Livre, iFood, Posto Shell" required class="form-input">
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Dia / Data do Gasto</label>
+                  <input type="date" id="receipt-extracted-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Categoria Sugerida</label>
+                  <select id="receipt-extracted-category" class="custom-select" required>
+                    <!-- Preenchido via JS -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Responsável pelo Gasto</label>
+                  <select id="receipt-extracted-person" class="custom-select" required>
+                    <option value="Ambos">👥 Ambos / Casa</option>
+                    <option value="Ju">👩 Ju</option>
+                    <option value="Ozi">👩 Ozi</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Conta / Cartão</label>
+                  <select id="receipt-extracted-account" class="custom-select" required>
+                    <!-- Preenchido via JS -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="modal-footer" style="padding-top: 12px;">
+                <button type="button" class="btn btn-secondary" id="btn-reset-receipt-ocr">Tentar Outro Print</button>
+                <button type="submit" class="btn btn-primary">
+                  <i data-lucide="plus-circle"></i>
+                  <span>Salvar Gasto do Print</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVA CONTA FIXA / RECORRENTE ==================== -->
+  <div class="modal-backdrop" id="modal-recurring" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Nova Conta Fixa Recorrente</h3>
+          <p class="modal-subtitle">Programe contas que se repetem todo mês (Aluguel, Salário, Internet)</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-recurring-modal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-new-recurring" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Descrição da Conta Fixa</label>
+          <input type="text" id="rec-desc" placeholder="Ex: Aluguel, Condomínio, Salário Ju, Internet" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Valor Previsto (R$)</label>
+            <input type="number" step="0.01" min="0.01" id="rec-amount" placeholder="0.00" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select id="rec-type" class="custom-select" required>
+              <option value="expense">Despesa Fixa (A Pagar)</option>
+              <option value="income">Receita Fixa (A Receber)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Dia do Vencimento (1 a 31)</label>
+            <input type="number" min="1" max="31" id="rec-due-day" placeholder="Ex: 5, 10, 20" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Responsável</label>
+            <select id="rec-person" class="custom-select">
+              <option value="Ambos">👥 Ambos / Casa</option>
+              <option value="Ju">👩 Ju</option>
+              <option value="Ozi">👩 Ozi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Conta / Banco Padrão</label>
+          <select id="rec-account" class="custom-select">
+            <option value="acc_c6">⬛ C6 Bank</option>
+            <option value="acc_mercadopago">🟦 Mercado Pago</option>
+            <option value="acc_nubank">🟪 Nubank</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-recurring">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Conta Fixa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVA COMPRA PARCELADA ==================== -->
+  <div class="modal-backdrop" id="modal-installment" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Nova Compra Parcelada no Cartão</h3>
+          <p class="modal-subtitle">Gera automaticamente as parcelas futuras e projeta as próximas faturas</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-installment-modal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-new-installment" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Descrição da Compra</label>
+          <input type="text" id="inst-desc" placeholder="Ex: Geladeira Nova, Celular, Passagens Aéreas" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Valor Total da Compra (R$)</label>
+            <input type="number" step="0.01" min="0.01" id="inst-total-amount" placeholder="Ex: 1200.00" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número de Parcelas</label>
+            <select id="inst-count" class="custom-select" required>
+              <option value="2">2x parcelas</option>
+              <option value="3" selected>3x parcelas</option>
+              <option value="4">4x parcelas</option>
+              <option value="5">5x parcelas</option>
+              <option value="6">6x parcelas</option>
+              <option value="8">8x parcelas</option>
+              <option value="10">10x parcelas</option>
+              <option value="12">12x parcelas</option>
+              <option value="18">18x parcelas</option>
+              <option value="24">24x parcelas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Data da 1ª Parcela</label>
+            <input type="date" id="inst-first-date" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cartão Utilizado</label>
+            <select id="inst-account" class="custom-select" required>
+              <option value="acc_c6">⬛ C6 Bank</option>
+              <option value="acc_nubank">🟪 Nubank</option>
+              <option value="acc_mercadopago">🟦 Mercado Pago</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <select id="inst-category" class="custom-select" required>
+              <!-- Preenchido via JS dinamicamente -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subcategoria</label>
+            <select id="inst-subcategory" class="custom-select">
+              <!-- Preenchido via JS dinamicamente -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Responsável</label>
+          <select id="inst-person" class="custom-select">
+            <option value="Ambos">👥 Ambos / Casa</option>
+            <option value="Ju">👩 Ju</option>
+            <option value="Ozi">👩 Ozi</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-installment">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Lançar Compra Parcelada</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: NOVO INVESTIMENTO ==================== -->
+  <div class="modal-backdrop" id="modal-investment" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Novo Investimento / Aplicação</h3>
+          <p class="modal-subtitle">Cadastre CDBs, Tesouro, FIIs ou Ações da Família Martins</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-investment-modal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="form-new-investment" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Nome do Investimento / Ativo</label>
+          <input type="text" id="inv-name" placeholder="Ex: CDB C6 110% CDI, Caixinha Nubank, Tesouro IPCA+, FII HGLG11" required class="form-input">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Instituição / Corretora / Banco</label>
+            <input type="text" id="inv-institution" placeholder="Ex: C6 Bank, Nubank, Mercado Pago, XP" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de Ativo</label>
+            <select id="inv-type" class="custom-select" required>
+              <option value="renda_fixa">🛡️ Renda Fixa (CDB / LCI / LCA / Tesouro)</option>
+              <option value="fii">🏢 Fundo Imobiliário (FII)</option>
+              <option value="acoes">📈 Ações & Renda Variável</option>
+              <option value="previdencia">🏦 Previdência Privada</option>
+              <option value="outros">💎 Outros Investimentos</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Valor Investido Atual (R$)</label>
+            <input type="number" step="0.01" min="0" id="inv-amount" placeholder="Ex: 5000.00" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aporte Mensal Previsto (R$)</label>
+            <input type="number" step="0.01" min="0" id="inv-monthly-deposit" placeholder="Ex: 300.00" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Rentabilidade Estimada (% a.a.)</label>
+            <input type="number" step="0.1" min="0" max="100" id="inv-annual-yield" placeholder="Ex: 11.5" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Titular / Responsável</label>
+            <select id="inv-person" class="custom-select">
+              <option value="Ambos">👥 Ambos / Família Martins</option>
+              <option value="Ju">👩 Ju</option>
+              <option value="Ozi">👩 Ozi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-investment">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Investimento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: COMANDO POR VOZ (ASSISTENTE INTELIGENTE) ==================== -->
+  <div class="modal-backdrop" id="modal-voice" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-voice">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title"><i data-lucide="mic" class="text-primary"></i> Assistente de Voz Inteligente</h3>
+          <p class="modal-subtitle">Diga quem está falando, se é gasto ou receita, o valor e a forma de pagamento</p>
+        </div>
+        <button class="btn-close-modal" id="btn-close-voice-modal" aria-label="Fechar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Área Visual de Escuta e Ondas Sonoras -->
+      <div class="voice-assistant-stage">
+        <div class="voice-mic-glow-wrapper">
+          <button type="button" class="btn-voice-mic recording" id="btn-voice-mic-toggle" title="Alternar gravação de voz">
+            <i data-lucide="mic"></i>
+          </button>
+          <div class="voice-sound-waves active" id="voice-sound-waves">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="voice-status-texts">
+          <h4 id="voice-status-title">Ouvindo você...</h4>
+          <p class="text-muted" id="voice-status-sub">Ex: <em>"Ju falando, gastei 120 reais no supermercado no cartão"</em> ou <em>"Aqui é a Ozi, recebi 250 de diária no pix"</em></p>
+        </div>
+
+        <!-- Caixa com a Transcrição em Tempo Real -->
+        <div class="voice-transcript-card">
+          <div class="transcript-badge"><i data-lucide="sparkles"></i> Transcrição da Fala</div>
+          <p id="voice-live-transcript" class="live-transcript-text">"Diga seu lançamento..."</p>
+        </div>
+      </div>
+
+      <!-- Card com os Dados Interpretados pela IA / NLP -->
+      <div class="voice-result-card hidden" id="voice-result-card">
+        <div class="result-header">
+          <span class="badge badge-success"><i data-lucide="check-circle-2"></i> Lançamento Detectado</span>
+          <span class="text-muted" style="font-size: 0.8rem;">Revise os dados abaixo:</span>
+        </div>
+
+        <div class="form-row-2" style="margin-top: 10px;">
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select id="voice-interpreted-type" class="custom-select">
+              <option value="expense">🔴 Despesa (-)</option>
+              <option value="income">🟢 Receita (+)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label text-success font-bold">Valor (R$)</label>
+            <div class="input-money-wrapper">
+              <span class="currency-symbol">R$</span>
+              <input type="number" step="0.01" id="voice-interpreted-amount" placeholder="0,00" class="input-money text-success font-bold" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descrição</label>
+          <input type="text" id="voice-interpreted-desc" placeholder="Descrição do gasto ou diária" class="form-input" required>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Quem falou?</label>
+            <select id="voice-interpreted-person" class="custom-select">
+              <option value="Ju">👩 Ju</option>
+              <option value="Ozi">👩 Ozi</option>
+              <option value="Ambos">👥 Ambos / Casa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <select id="voice-interpreted-cat" class="custom-select">
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento / Conta</label>
+          <select id="voice-interpreted-account" class="custom-select">
+            <!-- Preenchido via JS -->
+          </select>
+        </div>
+
+        <div class="modal-footer" style="padding-top: 14px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-voice-tx">Falar de Novo</button>
+          <button type="button" class="btn btn-primary" id="btn-confirm-voice-tx">
+            <i data-lucide="check"></i>
+            <span>Confirmar Lançamento por Voz</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKDROP DA SIDEBAR PARA MOBILE / TABLET -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR (BOTTOM NAV BAR) PARA CELULAR E TABLET -->
+  <nav class="bottom-nav-bar" id="bottom-nav-bar" aria-label="Navegação Principal Mobile">
+    <button class="bottom-nav-item active" data-view="dashboard" id="bnav-dashboard">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Início</span>
+    </button>
+    <button class="bottom-nav-item" data-view="transactions" id="bnav-transactions">
+      <i data-lucide="arrow-left-right"></i>
+      <span>Extrato</span>
+    </button>
+    <button class="bottom-nav-item center-fab" id="btn-bottom-new-tx" title="Nova Transação">
+      <div class="fab-circle">
+        <i data-lucide="plus"></i>
+      </div>
+      <span>Lançar</span>
+    </button>
+    <button class="bottom-nav-item" id="btn-bottom-import" title="Importar Planilha ou Print">
+      <i data-lucide="file-up"></i>
+      <span>Importar</span>
+    </button>
+    <button class="bottom-nav-item" id="btn-bottom-more" title="Mais Opções e Relatórios">
+      <i data-lucide="grid"></i>
+      <span>Mais</span>
+    </button>
+  </nav>
+
+  <!-- CONTAINER DE TOASTS / NOTIFICAÇÕES -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- SCRIPTS MODULARES -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

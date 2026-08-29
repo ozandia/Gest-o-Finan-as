@@ -1,0 +1,10 @@
+{
+  "name": "gestao-financeira",
+  "version": "2.0.0",
+  "description": "Sistema de Gestão Financeira Inteligente para Ju & Ozi",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
