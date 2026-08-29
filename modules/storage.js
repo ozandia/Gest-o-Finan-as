@@ -2,6 +2,8 @@
  * Gestão Financeira - Módulo de Armazenamento e Estado Inicial (Storage & Mock Data)
  */
 
+import { syncFullStateToCloud } from './cloud_sync.js';
+
 export const STORAGE_KEYS = {
   TRANSACTIONS: 'gestao_fin_transactions_v3',
   CATEGORIES: 'gestao_fin_categories_v4',
@@ -432,14 +434,16 @@ export function loadState() {
 }
 
 export function saveState(state) {
-  if (typeof localStorage === 'undefined') return;
-  if (Array.isArray(state.transactions)) localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(state.transactions));
-  if (state.categories) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(state.categories));
-  if (state.accounts) localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(state.accounts));
-  if (state.budgets) localStorage.setItem(STORAGE_KEYS.BUDGETS, JSON.stringify(state.budgets));
-  if (state.goals) localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(state.goals));
-  if (state.recurring) localStorage.setItem(STORAGE_KEYS.RECURRING, JSON.stringify(state.recurring));
-  if (state.investments) localStorage.setItem(STORAGE_KEYS.INVESTMENTS, JSON.stringify(state.investments));
+  if (typeof localStorage !== 'undefined') {
+    if (Array.isArray(state.transactions)) localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(state.transactions));
+    if (state.categories) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(state.categories));
+    if (state.accounts) localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(state.accounts));
+    if (state.budgets) localStorage.setItem(STORAGE_KEYS.BUDGETS, JSON.stringify(state.budgets));
+    if (state.goals) localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(state.goals));
+    if (state.recurring) localStorage.setItem(STORAGE_KEYS.RECURRING, JSON.stringify(state.recurring));
+    if (state.investments) localStorage.setItem(STORAGE_KEYS.INVESTMENTS, JSON.stringify(state.investments));
+  }
+  syncFullStateToCloud(state);
 }
 
 export function clearAllTransactions() {

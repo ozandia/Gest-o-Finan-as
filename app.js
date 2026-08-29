@@ -20,6 +20,7 @@ import { initAIAdvisor } from './modules/ai_advisor.js';
 import { initRecurringCalendar, renderCalendar } from './modules/recurring_calendar.js';
 import { initInstallments, renderInvoicesView } from './modules/installments.js';
 import { initProjections, renderInvestmentsList, openNewInvestmentModal } from './modules/projections.js';
+import { initCloudSync } from './modules/cloud_sync.js';
 
 // Estado Global da Aplicação
 let appState = {
@@ -60,6 +61,12 @@ function initApp() {
   populateCategoryAndAccountDropdowns();
 
   refreshAllViews();
+
+  // Inicializar Sincronização em Nuvem (Vercel Postgres)
+  initCloudSync(appState, () => {
+    populateCategoryAndAccountDropdowns();
+    refreshAllViews();
+  });
 
   if (window.lucide) window.lucide.createIcons();
 }

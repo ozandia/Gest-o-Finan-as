@@ -2630,3 +2630,80 @@ ul {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ==========================================================================
+   BADGE DE STATUS DA NUVEM (VERCEL POSTGRES)
+   ========================================================================== */
+.cloud-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  transition: var(--transition);
+}
+
+.cloud-status-badge:hover {
+  border-color: var(--border-focus);
+  background: var(--bg-card-hover);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9ca3af;
+  position: relative;
+}
+
+.status-dot.online {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.status-dot.online::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  animation: pulse-ring 2s infinite ease-out;
+}
+
+.status-dot.offline {
+  background: #f59e0b;
+}
+
+.status-dot.syncing {
+  background: #3b82f6;
+  animation: pulse-sync 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes pulse-sync {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .cloud-status-badge .status-text {
+    display: none;
+  }
+  .cloud-status-badge {
+    padding: 8px;
+  }
+}

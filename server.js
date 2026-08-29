@@ -22,6 +22,20 @@ const MIME_TYPES = {
 
 const server = http.createServer((req, res) => {
   let reqUrl = req.url.split('?')[0];
+
+  // Interceptar rotas de API em ambiente local caso Postgres não esteja configurado
+  if (reqUrl.startsWith('/api/')) {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return res.end(JSON.stringify({ 
+      success: true, 
+      localDev: true, 
+      message: 'Ambiente local (Vercel Postgres ativo em produção na Vercel)' 
+    }));
+  }
+
   if (reqUrl === '/') reqUrl = '/index.html';
 
   const filePath = path.join(__dirname, reqUrl);
