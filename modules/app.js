@@ -4,23 +4,23 @@
  * Orquestração de Estado, Rotas, Modais, KPIs e Eventos
  */
 
-import { loadState, saveState, exportTransactionsCSV, exportBackupJSON, generateDemoTransactions, clearAllTransactions, DEFAULT_CATEGORIES, DEFAULT_ACCOUNTS, DEFAULT_BUDGETS, DEFAULT_GOALS } from './modules/storage.js';
-import { formatCurrency, formatDate, generateId, filterTransactionsByPeriod, showToast } from './modules/utils.js';
-import { renderCashflowChart, renderCategoryChart } from './modules/charts.js';
-import { renderTransactionsTable, saveTransactionFromForm } from './modules/transactions.js';
-import { renderBudgetsView, renderDashboardBudgets } from './modules/budgets.js';
-import { renderGoalsView } from './modules/goals.js';
-import { renderAccountsView, calculateAccountBalances } from './modules/accounts.js';
-import { renderReportsView } from './modules/reports.js';
-import { AVATARS } from './modules/avatars.js';
-import { initSpreadsheetImport } from './modules/import_spreadsheet.js';
-import { initReceiptOCR } from './modules/import_receipt.js';
-import { initVoiceCommand } from './modules/voice_input.js';
-import { initAIAdvisor } from './modules/ai_advisor.js';
-import { initRecurringCalendar, renderCalendar } from './modules/recurring_calendar.js';
-import { initInstallments, renderInvoicesView } from './modules/installments.js';
-import { initProjections, renderInvestmentsList, openNewInvestmentModal } from './modules/projections.js';
-import { initCloudSync } from './modules/cloud_sync.js';
+import { loadState, saveState, exportTransactionsCSV, exportBackupJSON, generateDemoTransactions, clearAllTransactions, DEFAULT_CATEGORIES, DEFAULT_ACCOUNTS, DEFAULT_BUDGETS, DEFAULT_GOALS } from './storage.js';
+import { formatCurrency, formatDate, generateId, filterTransactionsByPeriod, showToast } from './utils.js';
+import { renderCashflowChart, renderCategoryChart } from './charts.js';
+import { renderTransactionsTable, saveTransactionFromForm } from './transactions.js';
+import { renderBudgetsView, renderDashboardBudgets } from './budgets.js';
+import { renderGoalsView } from './goals.js';
+import { renderAccountsView, calculateAccountBalances } from './accounts.js';
+import { renderReportsView } from './reports.js';
+import { AVATARS } from './avatars.js';
+import { initSpreadsheetImport } from './import_spreadsheet.js';
+import { initReceiptOCR } from './import_receipt.js';
+import { initVoiceCommand } from './voice_input.js';
+import { initAIAdvisor } from './ai_advisor.js';
+import { initRecurringCalendar, renderCalendar } from './recurring_calendar.js';
+import { initInstallments, renderInvoicesView } from './installments.js';
+import { initProjections, renderInvestmentsList, openNewInvestmentModal } from './projections.js';
+import { initCloudSync } from './cloud_sync.js';
 
 // Estado Global da Aplicação
 let appState = {
@@ -1181,3 +1181,4 @@ function initGlobalShortcuts() {
     }
   });
 }
+
