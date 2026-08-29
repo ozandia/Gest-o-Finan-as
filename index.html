@@ -443,6 +443,17 @@
                   <option value="all">Todas as Contas</option>
                 </select>
 
+                <!-- Filtro Forma de Pagamento -->
+                <select id="tx-filter-payment-method" class="custom-select">
+                  <option value="all">Todas as Formas</option>
+                  <option value="pix">⚡ PIX</option>
+                  <option value="debit">💳 Débito</option>
+                  <option value="credit">💳 Crédito</option>
+                  <option value="cash">💵 Dinheiro</option>
+                  <option value="transfer">🏦 Transferência</option>
+                  <option value="boleto">📄 Boleto</option>
+                </select>
+
                 <!-- Filtro Status -->
                 <select id="tx-filter-status" class="custom-select">
                   <option value="all">Todos os Status</option>
@@ -1071,10 +1082,10 @@
           </div>
         </div>
 
-        <!-- Descrição -->
+        <!-- Descrição (Opcional) -->
         <div class="form-group">
-          <label for="tx-desc" class="form-label">Descrição</label>
-          <input type="text" id="tx-desc" placeholder="Ex: Supermercado Carrefour, Salário, Uber" required class="form-input">
+          <label for="tx-desc" class="form-label">Descrição <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(opcional)</span></label>
+          <input type="text" id="tx-desc" placeholder="Ex: Supermercado Carrefour, Salário, Uber (opcional)" class="form-input">
         </div>
 
         <div class="form-row-2">
@@ -1120,6 +1131,19 @@
         </div>
 
         <div class="form-row-2">
+          <!-- Forma / Método de Pagamento -->
+          <div class="form-group" id="group-tx-payment-method">
+            <label for="tx-payment-method" class="form-label">Forma de Pagamento</label>
+            <select id="tx-payment-method" class="custom-select" required>
+              <option value="pix">⚡ PIX</option>
+              <option value="debit">💳 Cartão de Débito</option>
+              <option value="credit">💳 Cartão de Crédito</option>
+              <option value="cash">💵 Dinheiro em Espécie</option>
+              <option value="transfer">🏦 Transferência / TED</option>
+              <option value="boleto">📄 Boleto Bancário</option>
+            </select>
+          </div>
+
           <!-- Status de Pagamento -->
           <div class="form-group">
             <label for="tx-status" class="form-label">Situação</label>
@@ -1128,21 +1152,23 @@
               <option value="pending">Pendente / Agendado</option>
             </select>
           </div>
+        </div>
 
-          <!-- Parcelas / Repetição Opcional -->
-          <div class="form-group" id="group-tx-installments">
-            <label for="tx-installments" class="form-label">Parcelamento / Recorrência</label>
-            <select id="tx-installments" class="custom-select">
-              <option value="1">Pagamento Único (À vista)</option>
-              <option value="2">2x parcelas mensais</option>
-              <option value="3">3x parcelas mensais</option>
-              <option value="4">4x parcelas mensais</option>
-              <option value="5">5x parcelas mensais</option>
-              <option value="6">6x parcelas mensais</option>
-              <option value="10">10x parcelas mensais</option>
-              <option value="12">12x parcelas mensais</option>
-            </select>
-          </div>
+        <!-- Parcelas (Exibido quando Cartão de Crédito) -->
+        <div class="form-group hidden" id="group-tx-installments">
+          <label for="tx-installments" class="form-label">Parcelamento no Cartão de Crédito</label>
+          <select id="tx-installments" class="custom-select">
+            <option value="1">1x À vista (sem parcelas)</option>
+            <option value="2">2x parcelas mensais</option>
+            <option value="3">3x parcelas mensais</option>
+            <option value="4">4x parcelas mensais</option>
+            <option value="5">5x parcelas mensais</option>
+            <option value="6">6x parcelas mensais</option>
+            <option value="10">10x parcelas mensais</option>
+            <option value="12">12x parcelas mensais</option>
+            <option value="18">18x parcelas mensais</option>
+            <option value="24">24x parcelas mensais</option>
+          </select>
         </div>
 
         <div class="modal-footer">
@@ -1578,8 +1604,8 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">Descrição / Estabelecimento</label>
-                <input type="text" id="receipt-extracted-desc" placeholder="Ex: Mercado Livre, iFood, Posto Shell" required class="form-input">
+                <label class="form-label">Descrição / Estabelecimento <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(opcional)</span></label>
+                <input type="text" id="receipt-extracted-desc" placeholder="Ex: Mercado Livre, iFood, Posto Shell (opcional)" class="form-input">
               </div>
 
               <div class="form-row-2">
@@ -1639,8 +1665,8 @@
 
       <form id="form-new-recurring" class="modal-form">
         <div class="form-group">
-          <label class="form-label">Descrição da Conta Fixa</label>
-          <input type="text" id="rec-desc" placeholder="Ex: Aluguel, Condomínio, Salário Ju, Internet" required class="form-input">
+          <label class="form-label">Descrição da Conta Fixa <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(opcional)</span></label>
+          <input type="text" id="rec-desc" placeholder="Ex: Aluguel, Condomínio, Salário Ju, Internet (opcional)" class="form-input">
         </div>
 
         <div class="form-row-2">
@@ -1904,8 +1930,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Descrição</label>
-          <input type="text" id="voice-interpreted-desc" placeholder="Descrição do gasto ou diária" class="form-input" required>
+          <label class="form-label">Descrição <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(opcional)</span></label>
+          <input type="text" id="voice-interpreted-desc" placeholder="Descrição do gasto ou diária (opcional)" class="form-input">
         </div>
 
         <div class="form-row-2">

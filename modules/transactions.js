@@ -27,6 +27,7 @@ export function renderTransactionsTable(state, onStateChange, onEditTx) {
   const filterType = document.getElementById('tx-filter-type')?.value || 'all';
   const filterCategory = document.getElementById('tx-filter-category')?.value || 'all';
   const filterAccount = document.getElementById('tx-filter-account')?.value || 'all';
+  const filterPaymentMethod = document.getElementById('tx-filter-payment-method')?.value || 'all';
   const filterStatus = document.getElementById('tx-filter-status')?.value || 'all';
 
   // Aplicar filtros
@@ -56,6 +57,12 @@ export function renderTransactionsTable(state, onStateChange, onEditTx) {
 
     // Conta
     if (filterAccount !== 'all' && tx.accountId !== filterAccount) return false;
+
+    // Forma de Pagamento (PIX, Débito, Crédito, etc.)
+    if (filterPaymentMethod !== 'all') {
+      const txPay = tx.paymentMethod || 'pix';
+      if (txPay !== filterPaymentMethod) return false;
+    }
 
     // Status
     if (filterStatus !== 'all' && tx.status !== filterStatus) return false;
@@ -125,6 +132,17 @@ export function renderTransactionsTable(state, onStateChange, onEditTx) {
     const personKey = person.toLowerCase() === 'ju' ? 'ju' : (person.toLowerCase() === 'ozi' ? 'ozi' : 'ambos');
     const personEmoji = personKey === 'ju' ? '👩🏻' : (personKey === 'ozi' ? '👩🏽‍🦱' : '👥');
 
+    const paymentMethod = tx.paymentMethod || (tx.type === 'transfer' ? 'transfer' : 'pix');
+    const paymentMap = {
+      pix: { label: '⚡ PIX', color: '#10b981', bg: 'rgba(16, 185, 129, 0.12)' },
+      debit: { label: '💳 Débito', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.12)' },
+      credit: { label: '💳 Crédito', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.12)' },
+      cash: { label: '💵 Dinheiro', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)' },
+      transfer: { label: '🏦 TED / Transf.', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.12)' },
+      boleto: { label: '📄 Boleto', color: '#9ca3af', bg: 'rgba(156, 163, 175, 0.12)' }
+    };
+    const payInfo = paymentMap[paymentMethod] || paymentMap.pix;
+
     return `
       <tr data-tx-id="${tx.id}">
         <td>
@@ -153,10 +171,15 @@ export function renderTransactionsTable(state, onStateChange, onEditTx) {
           </div>
         </td>
         <td>
-          <span class="tag-badge" style="background: var(--bg-input); border: 1px solid var(--border-color);">
-            <i data-lucide="credit-card" style="width: 12px; height: 12px;"></i>
-            ${acc.name}
-          </span>
+          <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+            <span class="tag-badge" style="background: var(--bg-input); border: 1px solid var(--border-color);">
+              <i data-lucide="credit-card" style="width: 12px; height: 12px;"></i>
+              ${acc.name}
+            </span>
+            <span class="tag-badge" style="background: ${payInfo.bg}; color: ${payInfo.color}; font-size: 0.72rem; padding: 2px 7px; font-weight: 700; border-radius: 6px;">
+              ${payInfo.label}
+            </span>
+          </div>
         </td>
         <td class="font-mono text-muted" style="font-size: 0.85rem;">
           ${formatDate(tx.date)}
@@ -251,7 +274,7 @@ export function renderTransactionsTable(state, onStateChange, onEditTx) {
 }
 
 export function saveTransactionFromForm(formData, state, onStateChange) {
-  const { id, type, person, desc, amount, categoryId, subcategory, accountId, destAccountId, date, status, installments } = formData;
+  const { id, type, person, desc, amount, categoryId, subcategory, accountId, destAccountId, date, status, paymentMethod, installments } = formData;
   const numAmount = parseFloat(amount);
 
   if (isNaN(numAmount) || numAmount <= 0) {
@@ -260,6 +283,11 @@ export function saveTransactionFromForm(formData, state, onStateChange) {
   }
 
   const cleanSubcat = type === 'transfer' ? null : (subcategory || null);
+  const cleanPaymentMethod = type === 'transfer' ? 'transfer' : (paymentMethod || 'pix');
+
+  const catObj = state.categories.find(c => c.id === categoryId);
+  const defaultDesc = cleanSubcat || catObj?.name || (type === 'transfer' ? 'Transferência entre Contas' : 'Lançamento');
+  const finalDesc = (desc && desc.trim()) ? desc.trim() : defaultDesc;
 
   if (id) {
     // Edição de transação existente
@@ -269,20 +297,21 @@ export function saveTransactionFromForm(formData, state, onStateChange) {
         ...state.transactions[idx],
         type,
         person: person || 'Ambos',
-        desc,
+        desc: finalDesc,
         amount: numAmount,
         categoryId: type === 'transfer' ? 'cat_other' : categoryId,
         subcategory: cleanSubcat,
         accountId,
         destAccountId: type === 'transfer' ? destAccountId : null,
+        paymentMethod: cleanPaymentMethod,
         date,
         status
       };
       showToast('Transação atualizada com sucesso!', 'success');
     }
   } else {
-    // Nova transação (com suporte a parcelamento)
-    const numInstallments = parseInt(installments, 10) || 1;
+    // Nova transação (com suporte a parcelamento no cartão de crédito)
+    const numInstallments = (cleanPaymentMethod === 'credit' || !cleanPaymentMethod) ? (parseInt(installments, 10) || 1) : 1;
 
     if (numInstallments > 1 && type === 'expense') {
       const installmentAmount = +(numAmount / numInstallments).toFixed(2);
@@ -296,11 +325,12 @@ export function saveTransactionFromForm(formData, state, onStateChange) {
           id: generateId('tx'),
           type,
           person: person || 'Ambos',
-          desc: `${desc} (${i + 1}/${numInstallments})`,
+          desc: `${finalDesc} (${i + 1}/${numInstallments})`,
           amount: installmentAmount,
           categoryId,
           subcategory: cleanSubcat,
           accountId,
+          paymentMethod: 'credit',
           date: instDate.toISOString().split('T')[0],
           status: i === 0 ? status : 'pending' // primeira parcela segue status, demais pendentes
         };
@@ -312,12 +342,13 @@ export function saveTransactionFromForm(formData, state, onStateChange) {
         id: generateId('tx'),
         type,
         person: person || 'Ambos',
-        desc,
+        desc: finalDesc,
         amount: numAmount,
         categoryId: type === 'transfer' ? 'cat_other' : categoryId,
         subcategory: cleanSubcat,
         accountId,
         destAccountId: type === 'transfer' ? destAccountId : null,
+        paymentMethod: cleanPaymentMethod,
         date,
         status
       };

@@ -1290,22 +1290,63 @@ ul {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .currency-symbol {
   position: absolute;
   left: 14px;
-  font-weight: 700;
-  color: var(--primary);
+  font-weight: 800;
+  color: #1e293b;
   font-family: var(--font-mono);
+  font-size: 1.15rem;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.input-money {
-  padding-left: 42px !important;
+.input-money,
+#tx-amount,
+#deposit-amount,
+#budget-limit,
+#receipt-extracted-amount,
+#voice-interpreted-amount {
+  width: 100%;
+  background: #ffffff !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: var(--radius-md) !important;
+  padding: 10px 14px 10px 48px !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
-  font-family: var(--font-mono);
-  width: 100%;
+  font-family: var(--font-mono) !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  transition: var(--transition) !important;
+}
+
+.input-money:focus,
+#tx-amount:focus,
+#deposit-amount:focus,
+#budget-limit:focus,
+#receipt-extracted-amount:focus,
+#voice-interpreted-amount:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.input-money::placeholder,
+#tx-amount::placeholder,
+#deposit-amount::placeholder,
+#budget-limit::placeholder,
+#receipt-extracted-amount::placeholder,
+#voice-interpreted-amount::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  font-weight: 500 !important;
 }
 
 .type-selector-tabs {
@@ -2582,6 +2623,12 @@ ul {
     font-size: 16px !important; /* Previne auto-zoom no Safari iOS */
     padding: 10px 12px !important;
     min-height: 44px !important;
+  }
+
+  .input-money {
+    font-size: 1.25rem !important;
+    min-height: 48px !important;
+    padding-left: 48px !important;
   }
 
   .member-selector-chips {

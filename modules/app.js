@@ -335,29 +335,40 @@ function populateCategoryAndAccountDropdowns() {
   const budgetCatSelect = document.getElementById('budget-category');
   const instCatSelect = document.getElementById('inst-category');
 
+  const incomeCats = appState.categories.filter(c => c.type === 'income');
+  const expenseCats = appState.categories.filter(c => c.type === 'expense');
+
   if (modalCatSelect) {
-    modalCatSelect.innerHTML = appState.categories.map(c => `
-      <option value="${c.id}">${c.name}</option>
-    `).join('');
+    modalCatSelect.innerHTML = `
+      <optgroup label="💰 RECEITAS (Salários, Diárias)">
+        ${incomeCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </optgroup>
+      <optgroup label="💳 DESPESAS (Mercado, Transporte, Outros...)">
+        ${expenseCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </optgroup>
+    `;
     updateSubcategoryDropdown('tx-category', 'tx-subcategory');
   }
 
   if (filterCatSelect) {
     filterCatSelect.innerHTML = `
       <option value="all">Todas as Categorias</option>
-      ${appState.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      <optgroup label="💰 RECEITAS (Salários, Diárias, Rendimentos)">
+        ${incomeCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </optgroup>
+      <optgroup label="💳 DESPESAS (Mercado, Transporte, Moradia, Outros...)">
+        ${expenseCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </optgroup>
     `;
   }
 
   if (budgetCatSelect) {
-    const expenseCats = appState.categories.filter(c => c.type === 'expense');
     budgetCatSelect.innerHTML = expenseCats.map(c => `
       <option value="${c.id}">${c.name}</option>
     `).join('');
   }
 
   if (instCatSelect) {
-    const expenseCats = appState.categories.filter(c => c.type === 'expense');
     instCatSelect.innerHTML = expenseCats.map(c => `
       <option value="${c.id}">${c.name}</option>
     `).join('');
@@ -672,6 +683,12 @@ function openNewTransactionModal() {
   document.getElementById('modal-tx-title').textContent = 'Nova Transação';
   document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
 
+  const payMethodSelect = document.getElementById('tx-payment-method');
+  if (payMethodSelect) payMethodSelect.value = 'pix';
+
+  const groupInst = document.getElementById('group-tx-installments');
+  if (groupInst) groupInst.classList.add('hidden');
+
   // Set default type to expense
   setTypeTab('expense');
   setPersonChip('Ambos');
@@ -689,6 +706,9 @@ function openEditTransactionModal(tx) {
   document.getElementById('tx-date').value = tx.date;
   document.getElementById('tx-status').value = tx.status || 'paid';
   document.getElementById('tx-account').value = tx.accountId;
+
+  const payMethodSelect = document.getElementById('tx-payment-method');
+  if (payMethodSelect) payMethodSelect.value = tx.paymentMethod || (tx.type === 'transfer' ? 'transfer' : 'pix');
 
   setTypeTab(tx.type);
   setPersonChip(tx.person || 'Ambos');
@@ -765,30 +785,81 @@ function setTypeTab(type) {
   const groupCategory = document.getElementById('group-tx-category');
   const groupSubcategory = document.getElementById('group-tx-subcategory');
   const groupDestination = document.getElementById('group-tx-destination');
+  const groupPayMethod = document.getElementById('group-tx-payment-method');
   const groupInstallments = document.getElementById('group-tx-installments');
   const labelAccount = document.getElementById('label-tx-account');
+  const currentPayMethod = document.getElementById('tx-payment-method')?.value || 'pix';
 
   if (isTransfer) {
     groupCategory?.classList.add('hidden');
     groupSubcategory?.classList.add('hidden');
     groupDestination?.classList.remove('hidden');
+    groupPayMethod?.classList.add('hidden');
     groupInstallments?.classList.add('hidden');
     if (labelAccount) labelAccount.textContent = 'Conta Origem (Saída)';
   } else {
     groupCategory?.classList.remove('hidden');
     groupSubcategory?.classList.remove('hidden');
     groupDestination?.classList.add('hidden');
-    groupInstallments?.classList.remove('hidden');
+    groupPayMethod?.classList.remove('hidden');
+    
+    // Parcelamento só é visível se for Despesa no Cartão de Crédito
+    if (groupInstallments) {
+      groupInstallments.classList.toggle('hidden', !(type === 'expense' && currentPayMethod === 'credit'));
+    }
+
     if (labelAccount) labelAccount.textContent = 'Conta / Cartão';
 
-    // Filtrar categorias correspondentes ao tipo
+    // Filtrar categorias correspondentes ao tipo (Receita vs Despesa)
     const catSelect = document.getElementById('tx-category');
     if (catSelect) {
-      const filteredCats = appState.categories.filter(c => c.type === type || c.type === 'both');
+      const selectedPerson = document.querySelector('input[name="tx-person"]:checked')?.value || 'Ambos';
       const prevVal = catSelect.value;
-      catSelect.innerHTML = filteredCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      if (filteredCats.some(c => c.id === prevVal)) {
-        catSelect.value = prevVal;
+      
+      if (type === 'income') {
+        const incomeCats = appState.categories.filter(c => c.type === 'income');
+        const salariesAndDiarias = incomeCats.filter(c => c.id.includes('salary') || c.id.includes('diaria'));
+        const otherIncomes = incomeCats.filter(c => !c.id.includes('salary') && !c.id.includes('diaria'));
+
+        catSelect.innerHTML = `
+          <optgroup label="💰 Salários & Diárias">
+            ${salariesAndDiarias.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </optgroup>
+          <optgroup label="📈 Outras Receitas">
+            ${otherIncomes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </optgroup>
+        `;
+        
+        // Seleção inteligente com base no responsável
+        if (incomeCats.some(c => c.id === prevVal)) {
+          catSelect.value = prevVal;
+        } else if (selectedPerson === 'Ju') {
+          catSelect.value = 'cat_salary_ju';
+        } else if (selectedPerson === 'Ozi') {
+          catSelect.value = 'cat_salary_ozi';
+        } else {
+          catSelect.value = incomeCats[0]?.id || 'cat_salary_ju';
+        }
+      } else {
+        // Despesas (Mercado, Transporte, Moradia, Outros...)
+        const expenseCats = appState.categories.filter(c => c.type === 'expense');
+        const mainExpenses = expenseCats.filter(c => c.essential || c.id === 'cat_food');
+        const otherExpenses = expenseCats.filter(c => !c.essential && c.id !== 'cat_food');
+
+        catSelect.innerHTML = `
+          <optgroup label="🛒 Mercado & Essenciais">
+            ${mainExpenses.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </optgroup>
+          <optgroup label="💳 Estilo de Vida & Outros">
+            ${otherExpenses.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </optgroup>
+        `;
+        
+        if (expenseCats.some(c => c.id === prevVal)) {
+          catSelect.value = prevVal;
+        } else {
+          catSelect.value = 'cat_food'; // Padrão: Mercado e Alimentação
+        }
       }
       updateSubcategoryDropdown('tx-category', 'tx-subcategory');
     }
@@ -803,6 +874,21 @@ function setPersonChip(person) {
     radio.checked = isSelected;
     chip.classList.toggle('active', isSelected);
   });
+
+  // Se estiver na aba Receita, seleciona automaticamente a categoria de Salário/Diária correspondente
+  const typeRadio = document.querySelector('input[name="tx-type"]:checked');
+  const selectedType = typeRadio ? typeRadio.value : 'expense';
+  const catSelect = document.getElementById('tx-category');
+
+  if (selectedType === 'income' && catSelect) {
+    if (person === 'Ju' && (!catSelect.value || catSelect.value.includes('_ozi'))) {
+      catSelect.value = 'cat_salary_ju';
+      updateSubcategoryDropdown('tx-category', 'tx-subcategory');
+    } else if (person === 'Ozi' && (!catSelect.value || catSelect.value.includes('_ju'))) {
+      catSelect.value = 'cat_salary_ozi';
+      updateSubcategoryDropdown('tx-category', 'tx-subcategory');
+    }
+  }
 }
 
 /**
@@ -820,6 +906,20 @@ function initFormListeners() {
   // Listener de mudança de categoria no modal de transação
   document.getElementById('tx-category')?.addEventListener('change', () => {
     updateSubcategoryDropdown('tx-category', 'tx-subcategory');
+  });
+
+  // Listener de mudança de forma de pagamento no modal de transação
+  document.getElementById('tx-payment-method')?.addEventListener('change', (e) => {
+    const groupInst = document.getElementById('group-tx-installments');
+    const isCredit = e.target.value === 'credit';
+    const typeRadio = document.querySelector('input[name="tx-type"]:checked');
+    const isExpense = !typeRadio || typeRadio.value === 'expense';
+    if (groupInst) {
+      groupInst.classList.toggle('hidden', !(isCredit && isExpense));
+      if (!isCredit) {
+        document.getElementById('tx-installments').value = '1';
+      }
+    }
   });
 
   // Listener de mudança de categoria no modal de compra parcelada
@@ -840,6 +940,7 @@ function initFormListeners() {
     e.preventDefault();
     const type = document.querySelector('input[name="tx-type"]:checked')?.value || 'expense';
     const person = document.querySelector('input[name="tx-person"]:checked')?.value || 'Ambos';
+    const paymentMethod = document.getElementById('tx-payment-method')?.value || 'pix';
     
     const formData = {
       id: document.getElementById('tx-id').value,
@@ -852,6 +953,7 @@ function initFormListeners() {
       accountId: document.getElementById('tx-account').value,
       destAccountId: document.getElementById('tx-destination-account').value,
       date: document.getElementById('tx-date').value,
+      paymentMethod,
       status: document.getElementById('tx-status').value,
       installments: document.getElementById('tx-installments')?.value || '1'
     };
@@ -1002,7 +1104,7 @@ function initFormListeners() {
   });
 
   // Filtros da Tabela de Transações
-  ['tx-search-input', 'tx-filter-person', 'tx-filter-type', 'tx-filter-category', 'tx-filter-account', 'tx-filter-status'].forEach(id => {
+  ['tx-search-input', 'tx-filter-person', 'tx-filter-type', 'tx-filter-category', 'tx-filter-account', 'tx-filter-payment-method', 'tx-filter-status'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('input', () => {

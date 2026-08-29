@@ -136,10 +136,10 @@ export const DEFAULT_CATEGORIES = [
     ]
   },
 
-  // 3. Alimentação
+  // 3. Mercado e Alimentação
   { 
     id: 'cat_food', 
-    name: 'Alimentação', 
+    name: 'Mercado e Alimentação', 
     type: 'expense', 
     icon: 'shopping-cart', 
     color: '#f59e0b', 
@@ -147,9 +147,12 @@ export const DEFAULT_CATEGORIES = [
     member: 'Ambos',
     subcategories: [
       'Mercado', 
+      'Supermercado',
       'Feira', 
       'Açougue', 
-      'Delivery'
+      'Padaria',
+      'Delivery',
+      'Restaurante'
     ]
   },
 
@@ -366,7 +369,9 @@ export const DEFAULT_CATEGORIES = [
     member: 'Ambos',
     subcategories: [
       'Doação', 
-      'Extras'
+      'Extras',
+      'Diversos',
+      'Imprevistos'
     ]
   }
 ];
@@ -378,11 +383,35 @@ export const DEFAULT_ACCOUNTS = [
   { id: 'acc_nubank', name: 'Nubank', type: 'checking', initialBalance: 0.00, color: '#8b5cf6' }
 ];
 
-// Orçamentos Padrão (zerados)
-export const DEFAULT_BUDGETS = [];
+export const DEFAULT_BUDGETS = [
+  { id: 'bud_food', categoryId: 'cat_food', limit: 1500.00 },
+  { id: 'bud_transport', categoryId: 'cat_transport', limit: 800.00 },
+  { id: 'bud_housing', categoryId: 'cat_housing', limit: 2000.00 },
+  { id: 'bud_clothing', categoryId: 'cat_clothing_image', limit: 500.00 },
+  { id: 'bud_leisure', categoryId: 'cat_leisure', limit: 600.00 },
+  { id: 'bud_pet', categoryId: 'cat_pet', limit: 400.00 }
+];
 
-// Metas Padrão (zeradas)
-export const DEFAULT_GOALS = [];
+export const DEFAULT_GOALS = [
+  { 
+    id: 'goal_reserva', 
+    name: 'Reserva de Emergência (6 Meses)', 
+    target: 30000.00, 
+    current: 4500.00, 
+    deadline: '2026-12-31', 
+    icon: 'shield-check', 
+    color: '#10b981' 
+  },
+  { 
+    id: 'goal_viagem', 
+    name: 'Viagem de Fim de Ano Ju & Ozi', 
+    target: 8000.00, 
+    current: 2400.00, 
+    deadline: '2026-11-30', 
+    icon: 'plane', 
+    color: '#3b82f6' 
+  }
+];
 
 // Gerador de Transações de Demonstração (zerado para controle real do usuário)
 export function generateDemoTransactions() {
@@ -393,29 +422,26 @@ export function generateDemoTransactions() {
 export function loadState() {
   const isBrowser = typeof localStorage !== 'undefined';
   
-  // Limpar chaves legadas com dados de mock ou categorias antigas
-  if (isBrowser) {
-    localStorage.removeItem('gestao_fin_transactions_v2');
-    localStorage.removeItem('gestao_fin_accounts_v2');
-    localStorage.removeItem('gestao_fin_budgets_v2');
-    localStorage.removeItem('gestao_fin_goals_v2');
-    localStorage.removeItem('gestao_fin_categories_v3');
-  }
-
   const storedTx = isBrowser ? localStorage.getItem(STORAGE_KEYS.TRANSACTIONS) : null;
   const transactions = storedTx !== null ? JSON.parse(storedTx) : [];
   
-  // Carregar categorias atualizadas (versão v4 com 15 categorias e subcategorias)
+  // Carregar categorias atualizadas com separação clara de Receitas e Despesas
   let categories = isBrowser && localStorage.getItem(STORAGE_KEYS.CATEGORIES) 
     ? JSON.parse(localStorage.getItem(STORAGE_KEYS.CATEGORIES)) 
     : DEFAULT_CATEGORIES;
     
-  // Validação para garantir que novas categorias existem no estado atual
-  if (!categories || !categories.some(c => c.id === 'cat_clothing_image') || !categories.some(c => c.id === 'cat_pet')) {
+  // Sincronizar definições de categorias com DEFAULT_CATEGORIES
+  if (Array.isArray(categories)) {
+    const defaultIds = new Set(DEFAULT_CATEGORIES.map(c => c.id));
+    categories = DEFAULT_CATEGORIES.map(def => {
+      const existing = categories.find(c => c.id === def.id);
+      return existing ? { ...def, ...existing, name: def.name, type: def.type, subcategories: def.subcategories, icon: def.icon, color: def.color } : def;
+    });
+  } else {
     categories = DEFAULT_CATEGORIES;
-    if (isBrowser) {
-      localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(DEFAULT_CATEGORIES));
-    }
+  }
+  if (isBrowser) {
+    localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
   }
   
   let accounts = isBrowser && localStorage.getItem(STORAGE_KEYS.ACCOUNTS) ? JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS)) : null;
@@ -453,12 +479,20 @@ export function clearAllTransactions() {
   return [];
 }
 
-// Exportar CSV com coluna de Responsável
+// Exportar CSV com coluna de Responsável e Forma de Pagamento
 export function exportTransactionsCSV(transactions, categories, accounts) {
   const catMap = Object.fromEntries(categories.map(c => [c.id, c.name]));
   const accMap = Object.fromEntries(accounts.map(a => [a.id, a.name]));
+  const payMap = {
+    pix: 'PIX',
+    debit: 'Cartão de Débito',
+    credit: 'Cartão de Crédito',
+    cash: 'Dinheiro',
+    transfer: 'Transferência / TED',
+    boleto: 'Boleto'
+  };
 
-  const headers = ['ID', 'Data / Dia', 'Responsável', 'Tipo', 'Descrição', 'Categoria', 'Conta', 'Valor (R$)', 'Status'];
+  const headers = ['ID', 'Data / Dia', 'Responsável', 'Tipo', 'Descrição', 'Categoria', 'Conta', 'Forma de Pagamento', 'Valor (R$)', 'Status'];
   const rows = transactions.map(t => [
     t.id,
     t.date,
@@ -467,7 +501,8 @@ export function exportTransactionsCSV(transactions, categories, accounts) {
     `"${(t.desc || '').replace(/"/g, '""')}"`,
     `"${catMap[t.categoryId] || 'N/A'}"`,
     `"${accMap[t.accountId] || 'N/A'}"`,
-    t.amount.toFixed(2),
+    `"${payMap[t.paymentMethod] || 'PIX'}"`,
+    Number(t.amount).toFixed(2),
     t.status === 'paid' ? 'Pago' : 'Pendente'
   ]);
 

@@ -20,7 +20,7 @@ export const DEFAULT_CATEGORIES = [
   // 15 Despesas Solicitadas
   { id: 'cat_transport', name: 'Transporte', type: 'expense', icon: 'car', color: '#3b82f6', essential: true, member: 'Ambos', subcategories: ['Combustível', 'Parcela Carro', 'Estacionamento', 'Manutenção Preventiva', 'Manutenção Corretiva', 'Lavagem', 'Uber', 'Multa', 'Seguro', 'IPVA', 'Licenciamento'] },
   { id: 'cat_clothing_image', name: 'Vestuário e Imagem', type: 'expense', icon: 'sparkles', color: '#ec4899', essential: false, member: 'Ambos', subcategories: ['Roupas', 'Calçados', 'Acessórios', 'Salão', 'Estética', 'Cosméticos'] },
-  { id: 'cat_food', name: 'Alimentação', type: 'expense', icon: 'shopping-cart', color: '#f59e0b', essential: true, member: 'Ambos', subcategories: ['Mercado', 'Feira', 'Açougue', 'Delivery'] },
+  { id: 'cat_food', name: 'Mercado e Alimentação', type: 'expense', icon: 'shopping-cart', color: '#f59e0b', essential: true, member: 'Ambos', subcategories: ['Mercado', 'Supermercado', 'Feira', 'Açougue', 'Padaria', 'Delivery', 'Restaurante'] },
   { id: 'cat_housing', name: 'Moradia', type: 'expense', icon: 'home', color: '#ef4444', essential: true, member: 'Ambos', subcategories: ['Aluguel', 'Condomínio', 'IPTU', 'Água', 'Gás', 'Luz', 'Internet residencial', 'Manutenção da casa', 'Reparos Emergenciais', 'Móveis e eletrodomésticos'] },
   { id: 'cat_leisure', name: 'Lazer', type: 'expense', icon: 'coffee', color: '#8b5cf6', essential: false, member: 'Ambos', subcategories: ['Celebrações', 'Presentes', 'Bares', 'Cinema', 'Show', 'Passeios', 'Viagem', 'Cafeteria'] },
   { id: 'cat_health', name: 'Saúde', type: 'expense', icon: 'activity', color: '#10b981', essential: true, member: 'Ambos', subcategories: ['Plano de Saúde', 'Consultas Médicas', 'Terapia', 'Medicamentos', 'Exames', 'Odontologista', 'Academia', 'Massagens'] },
@@ -32,7 +32,7 @@ export const DEFAULT_CATEGORIES = [
   { id: 'cat_fees', name: 'Taxas', type: 'expense', icon: 'percent', color: '#64748b', essential: false, member: 'Ambos', subcategories: ['Tarifa Bancária', 'Anuidade Cartão', 'Juros', 'Manutenção Conta'] },
   { id: 'cat_invest_expense', name: 'Investimentos', type: 'expense', icon: 'trending-up', color: '#059669', essential: false, member: 'Ambos', subcategories: ['Ações', 'FIIs', 'Renda Fixa', 'Meta Ju e Ozi'] },
   { id: 'cat_gardening', name: 'Jardinagem', type: 'expense', icon: 'sprout', color: '#84cc16', essential: false, member: 'Ambos', subcategories: ['Mudas', 'Terra', 'Equipamentos', 'Sementes', 'Flores'] },
-  { id: 'cat_other', name: 'Outros', type: 'expense', icon: 'more-horizontal', color: '#9ca3af', essential: false, member: 'Ambos', subcategories: ['Doação', 'Extras'] }
+  { id: 'cat_other', name: 'Outros', type: 'expense', icon: 'more-horizontal', color: '#9ca3af', essential: false, member: 'Ambos', subcategories: ['Doação', 'Extras', 'Diversos', 'Imprevistos'] }
 ];
 
 export default async function handler(req, res) {
