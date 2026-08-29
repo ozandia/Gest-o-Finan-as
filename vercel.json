@@ -8,7 +8,10 @@
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/api/state", "dest": "/api/state.js" },
+    { "src": "/api/init", "dest": "/api/init.js" },
+    { "src": "/api/sync", "dest": "/api/sync.js" },
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
